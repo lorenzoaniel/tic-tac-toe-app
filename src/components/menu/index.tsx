@@ -2,7 +2,7 @@ import clsx from "clsx";
 import React from "react";
 import Logo from "../logo";
 
-const Menu = () => {
+const Menu: React.FC = () => {
 	return (
 		<section
 			className={clsx(

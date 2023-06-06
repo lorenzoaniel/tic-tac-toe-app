@@ -2,7 +2,7 @@ import clsx from "clsx";
 import React from "react";
 import Image from "next/image";
 
-const Logo = () => {
+const Logo: React.FC = () => {
 	return (
 		<div className={clsx("logo", "h-fit w-fit flex gap-x-[0.823rem]")}>
 			<Image
