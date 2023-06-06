@@ -1,9 +1,9 @@
 // import Image from "next/image";
 import Menu from "@/components/menu";
 import clsx from "clsx";
-import { Inter } from "next/font/google";
+// import { Inter } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
+// const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
 	return (
