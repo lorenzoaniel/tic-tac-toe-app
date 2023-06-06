@@ -30,6 +30,9 @@ module.exports = {
 			fontFamily: {
 				default: ["outfit", "mono"],
 			},
+			screens: {
+				lg: "1440px",
+			},
 		},
 	},
 	plugins: [],

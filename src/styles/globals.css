@@ -6,3 +6,10 @@
 	font-family: "outfit";
 	src: url("/assets/fonts/Outfit/Outfit-VariableFont_wght.ttf");
 }
+
+html {
+	/* duplicate in layout tailwindcss so that sizing works 
+		in storybook since components are modular and not affected by parent styling not initialized with it
+	*/
+	font-size: 62.5%;
+}
