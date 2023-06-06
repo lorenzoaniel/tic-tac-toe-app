@@ -4,11 +4,20 @@ import DefaultBtn from ".";
 const meta: Meta<typeof DefaultBtn> = {
 	title: "components/DefaultBtn",
 	component: DefaultBtn,
-	// This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
+	argTypes: {
+		btntype: {
+			options: ["marktoggle", "secondary"],
+			control: { type: "select" },
+		},
+	},
 	tags: ["autodocs"],
 };
 
 export default meta;
 type Story = StoryObj<typeof DefaultBtn>;
 
-export const Primary: Story = {};
+export const Primary: Story = {
+	args: {
+		btntype: "marktoggle",
+	},
+};
