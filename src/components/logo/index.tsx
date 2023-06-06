@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const Logo = () => {
 	return (
-		<div className={clsx("logo", "h-fit w-fit flex gap-x-[0.823rem] bg-primary-bg-100")}>
+		<div className={clsx("logo", "h-fit w-fit flex gap-x-[0.823rem]")}>
 			<Image
 				className={clsx("logo-x-icon")}
 				src={"/assets/images/icon-x.svg"}
