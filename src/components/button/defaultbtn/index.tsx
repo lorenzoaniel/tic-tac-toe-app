@@ -2,10 +2,12 @@ import clsx from "clsx";
 import React from "react";
 
 interface Props {
-	btntype: string;
+	btntype: "marktoggle";
 	markToggleActive?: boolean;
 	isMarkX?: boolean;
 }
+
+//TODO: need framer animation
 
 const DefaultBtn: React.FC<Props> = ({ btntype, markToggleActive, isMarkX }) => {
 	/* relies on btntype to construct any other element/s present for that type*/
