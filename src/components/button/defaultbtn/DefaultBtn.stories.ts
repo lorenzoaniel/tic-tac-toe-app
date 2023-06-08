@@ -6,8 +6,16 @@ const meta: Meta<typeof DefaultBtn> = {
 	component: DefaultBtn,
 	argTypes: {
 		btntype: {
-			options: ["marktoggle", "secondary"],
+			options: ["marktoggle", "test"],
 			control: { type: "select" },
+		},
+		markToggleActive: {
+			control: { type: "boolean" },
+			if: { arg: "btntype", eq: "marktoggle" },
+		},
+		isMarkX: {
+			control: { type: "boolean" },
+			if: { arg: "btntype", eq: "marktoggle" },
 		},
 	},
 	tags: ["autodocs"],
@@ -19,5 +27,7 @@ type Story = StoryObj<typeof DefaultBtn>;
 export const Primary: Story = {
 	args: {
 		btntype: "marktoggle",
+		markToggleActive: false,
+		isMarkX: false,
 	},
 };
