@@ -4,11 +4,15 @@ import MarkToggle from ".";
 const meta: Meta<typeof MarkToggle> = {
 	title: "components/MarkToggle",
 	component: MarkToggle,
-	// This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
+	argTypes: { markToggleActive: { control: { type: "boolean" } } },
 	tags: ["autodocs"],
 };
 
 export default meta;
 type Story = StoryObj<typeof MarkToggle>;
 
-export const Primary: Story = {};
+export const Primary: Story = {
+	args: {
+		markToggleActive: true,
+	},
+};
