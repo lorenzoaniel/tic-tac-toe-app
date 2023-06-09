@@ -7,6 +7,7 @@ interface Props {
 }
 
 //TODO: animations
+//TODO: add dispatch for onClick and selector for markToggleActive
 
 const MarkToggleBtn: React.FC<Props> = ({ markToggleActive }) => {
 	return (
@@ -18,8 +19,22 @@ const MarkToggleBtn: React.FC<Props> = ({ markToggleActive }) => {
 				"md:w-[41.2rem]"
 			)}
 		>
-			<DefaultBtn btntype={"marktoggle"} markToggleActive={markToggleActive} isMarkX={true} />
-			<DefaultBtn btntype={"marktoggle"} markToggleActive={markToggleActive} isMarkX={false} />
+			<DefaultBtn
+				btntype={"marktoggle"}
+				markToggleActive={markToggleActive}
+				isMarkX={true}
+				onClick={function () {
+					throw new Error("Function not implemented.");
+				}}
+			/>
+			<DefaultBtn
+				btntype={"marktoggle"}
+				markToggleActive={markToggleActive}
+				isMarkX={false}
+				onClick={function () {
+					throw new Error("Function not implemented.");
+				}}
+			/>
 		</div>
 	);
 };
