@@ -2,14 +2,24 @@ import clsx from "clsx";
 import React from "react";
 
 interface Props {
-	btntype: "marktoggle";
-	markToggleActive?: boolean;
-	isMarkX?: boolean;
+	btntype: "marktoggle" | "newgame";
+	markToggleActive?: boolean; //only used when btntype is marktoggle
+	isMarkX?: boolean; //only used when btntype is marktoggle
+	title?: string;
+	isPrimary?: boolean;
+	onClick: () => any;
 }
 
 //TODO: need framer animation
 
-const DefaultBtn: React.FC<Props> = ({ btntype, markToggleActive, isMarkX }) => {
+const DefaultBtn: React.FC<Props> = ({
+	btntype,
+	markToggleActive,
+	isMarkX,
+	onClick,
+	title,
+	isPrimary,
+}) => {
 	/* relies on btntype to construct any other element/s present for that type*/
 	const structure: { [key: string]: JSX.Element } = {
 		marktoggle: isMarkX ? (
@@ -29,6 +39,19 @@ const DefaultBtn: React.FC<Props> = ({ btntype, markToggleActive, isMarkX }) => 
 					fill={markToggleActive ? "#A8A8A8" : "#1A2A33"}
 				/>
 			</svg>
+		),
+		newgame: (
+			<h3
+				className={clsx(
+					"newgame-title",
+					"mt-[1.4rem]",
+					"text-heading-xs text-primary-text-100",
+					"md:mt-[1.7rem]",
+					"md:text-heading-s"
+				)}
+			>
+				{title}
+			</h3>
 		),
 	};
 
@@ -52,9 +75,27 @@ const DefaultBtn: React.FC<Props> = ({ btntype, markToggleActive, isMarkX }) => 
 
 			md:w-[19.8rem]
 		`,
+		newgame: `
+			h-[5.6rem] w-[32.7rem]
+			flex justify-center
+			${isPrimary ? "bg-primary-btn-100" : "bg-secondary-btn-100"}
+			rounded-[1.5rem]
+			${
+				isPrimary
+					? "shadow-[inset_0rem_-0.8rem_0rem_#118C87]"
+					: "shadow-[inset_0rem_-0.8rem_0rem_#CC8B13]"
+			}
+			
+
+			md:h-[6.7rem] md:w-[46rem]
+		`,
 	};
 
-	return <button className={clsx("defaultbtn", styling[btntype])}>{structure[btntype]}</button>;
+	return (
+		<button onClick={onClick} className={clsx("defaultbtn", styling[btntype])}>
+			{structure[btntype]}
+		</button>
+	);
 };
 
 export default DefaultBtn;

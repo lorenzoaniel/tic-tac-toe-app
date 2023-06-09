@@ -6,7 +6,7 @@ const meta: Meta<typeof DefaultBtn> = {
 	component: DefaultBtn,
 	argTypes: {
 		btntype: {
-			options: ["marktoggle", "test"],
+			options: ["marktoggle", "test", "newgame"],
 			control: { type: "select" },
 		},
 		markToggleActive: {
@@ -16,6 +16,14 @@ const meta: Meta<typeof DefaultBtn> = {
 		isMarkX: {
 			control: { type: "boolean" },
 			if: { arg: "btntype", eq: "marktoggle" },
+		},
+		title: {
+			control: { type: "select" },
+			options: ["NEW GAME (VS CPU)", "NEW GAME (VS PLAYER)"],
+		},
+		isPrimary: {
+			control: { type: "boolean" },
+			if: { arg: "btntype", eq: "newgame" },
 		},
 	},
 	tags: ["autodocs"],
@@ -29,5 +37,7 @@ export const Primary: Story = {
 		btntype: "marktoggle",
 		markToggleActive: false,
 		isMarkX: false,
+		title: "",
+		isPrimary: true,
 	},
 };
