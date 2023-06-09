@@ -15,7 +15,7 @@ const PlayerMark: React.FC<Props> = ({ markToggleActive }) => {
 			className={clsx(
 				"player-mark",
 				"w-[32.7rem] h-[20.5rem] rounded-[1.5rem] p-[2.4rem]",
-				"bg-primary-bg-200",
+				"bg-primary-bg-200 shadow-[inset_0rem_-0.8rem_0rem_#10212A]",
 				"flex flex-col items-center justify-around",
 				"md:w-[46rem]"
 			)}
