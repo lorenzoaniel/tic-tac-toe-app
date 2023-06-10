@@ -80,7 +80,11 @@ const DefaultBtn: React.FC<Props> = ({
 		newgame: `
 			h-[5.6rem] w-[32.7rem]
 			flex justify-center
-			${isPrimary ? "bg-primary-btn-100" : "bg-secondary-btn-100"}
+			${
+				isPrimary
+					? "bg-primary-btn-100 hover:bg-primary-btn-200"
+					: "bg-secondary-btn-100 hover:bg-secondary-btn-200"
+			}
 			rounded-[1.5rem]
 			${
 				isPrimary
