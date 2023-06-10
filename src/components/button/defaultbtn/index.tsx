@@ -67,9 +67,9 @@ const DefaultBtn: React.FC<Props> = ({
 				markToggleActive
 					? isMarkX
 						? "bg-secondary-btn-300"
-						: "bg-transparent"
+						: "bg-transparent hover:bg-[#A8BFC90D]"
 					: isMarkX
-					? "bg-transparent"
+					? "bg-transparent hover:bg-[#A8BFC90D]"
 					: "bg-secondary-btn-300"
 			}
 			rounded-[1rem]
@@ -117,9 +117,10 @@ const DefaultBtn: React.FC<Props> = ({
 	*/
 	const motionProps: { [key: string]: {} } = {
 		marktoggle: {
+			initial: "initial",
 			animate: "onToggleStateChange",
 			transition: "onToggleStateChangeTransition",
-			whileHover: markToggleActive ? (isMarkX ? "" : "whileHover") : isMarkX ? "" : "whileHover",
+			// whileHover: markToggleActive ? (isMarkX ? "" : "whileHover") : isMarkX ? "" : "",
 		},
 	};
 
