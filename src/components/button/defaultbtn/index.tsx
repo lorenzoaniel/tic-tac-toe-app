@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { motion } from "framer-motion";
 import React from "react";
 
 interface Props {
@@ -55,6 +56,7 @@ const DefaultBtn: React.FC<Props> = ({
 		),
 	};
 
+	/* custom stying for each btntype*/
 	const styling: { [key: string]: string } = {
 		test: `
 			h-[5.4rem] w-[13.199rem] bg-secondary-btn-100
@@ -91,10 +93,45 @@ const DefaultBtn: React.FC<Props> = ({
 		`,
 	};
 
+	/* custom framer-motion animation for each btntype*/
+	const animation: { [key: string]: {} } = {
+		marktoggle: {
+			onToggleStateChange: markToggleActive
+				? isMarkX
+					? { opacity: [1, 0.5, 1] }
+					: { opacity: [0, 0.5, 1] }
+				: isMarkX
+				? { opacity: [0, 0.5, 1] }
+				: { opacity: [1, 0.5, 1] },
+			onToggleStateChangeTransition: {
+				ease: "easeInOut",
+				duration: 1,
+			},
+			whileHover: { backgroundColor: "rgba(168, 191, 201, 0.05)" },
+		},
+	};
+
+	/* custom framer-motion prop to tell framer which 
+		animations to use (some btntypes might have multiple animations) 
+		for each btntype
+	*/
+	const motionProps: { [key: string]: {} } = {
+		marktoggle: {
+			animate: "onToggleStateChange",
+			transition: "onToggleStateChangeTransition",
+			whileHover: markToggleActive ? (isMarkX ? "" : "whileHover") : isMarkX ? "" : "whileHover",
+		},
+	};
+
 	return (
-		<button onClick={onClick} className={clsx("defaultbtn", styling[btntype])}>
+		<motion.button
+			{...motionProps[btntype]}
+			variants={animation[btntype]}
+			onClick={onClick}
+			className={clsx("defaultbtn", styling[btntype])}
+		>
 			{structure[btntype]}
-		</button>
+		</motion.button>
 	);
 };
 
