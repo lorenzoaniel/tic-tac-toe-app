@@ -17,6 +17,9 @@ module.exports = {
 						100: "#1A2A33",
 						200: "#1F3641",
 					},
+					text: {
+						100: "#1A2A33",
+					},
 				},
 				secondary: {
 					btn: {
