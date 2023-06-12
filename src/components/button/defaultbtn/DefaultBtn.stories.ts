@@ -6,7 +6,7 @@ const meta: Meta<typeof DefaultBtn> = {
 	component: DefaultBtn,
 	argTypes: {
 		btntype: {
-			options: ["marktoggle", "test", "newgame", "restart", "modalDefault"],
+			options: ["marktoggle", "test", "newgame", "restart", "modaldefault"],
 			control: { type: "select" },
 		},
 		markToggleActive: {
@@ -30,7 +30,6 @@ const meta: Meta<typeof DefaultBtn> = {
 		},
 		isPrimary: {
 			control: { type: "boolean" },
-			// if: { arg: "btntype", eq: ("newgame" | "modalDefault") },
 		},
 	},
 	tags: ["autodocs"],
