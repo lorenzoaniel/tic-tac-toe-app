@@ -6,7 +6,7 @@ const meta: Meta<typeof DefaultBtn> = {
 	component: DefaultBtn,
 	argTypes: {
 		btntype: {
-			options: ["marktoggle", "test", "newgame", "restart"],
+			options: ["marktoggle", "test", "newgame", "restart", "modalDefault"],
 			control: { type: "select" },
 		},
 		markToggleActive: {
@@ -19,11 +19,18 @@ const meta: Meta<typeof DefaultBtn> = {
 		},
 		title: {
 			control: { type: "select" },
-			options: ["NEW GAME (VS CPU)", "NEW GAME (VS PLAYER)"],
+			options: [
+				"NEW GAME (VS CPU)",
+				"NEW GAME (VS PLAYER)",
+				"QUIT",
+				"NEXT ROUND",
+				"NO, CANCEL",
+				"YES, RESTART",
+			],
 		},
 		isPrimary: {
 			control: { type: "boolean" },
-			if: { arg: "btntype", eq: "newgame" },
+			// if: { arg: "btntype", eq: ("newgame" | "modalDefault") },
 		},
 	},
 	tags: ["autodocs"],

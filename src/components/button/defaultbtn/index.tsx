@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import React from "react";
 
 interface Props {
-	btntype: "marktoggle" | "newgame" | "restart";
+	btntype: "marktoggle" | "newgame" | "restart" | "modalDefault";
 	markToggleActive?: boolean; //only used when btntype is marktoggle
 	isMarkX?: boolean; //only used when btntype is marktoggle
 	title?: string;
@@ -68,6 +68,7 @@ const DefaultBtn: React.FC<Props> = ({
 				/>
 			</svg>
 		),
+		modalDefault: <h3 className={clsx("text-heading-xs text-primary-text-100")}>{title}</h3>,
 	};
 
 	/* custom stying for each btntype*/
@@ -120,6 +121,19 @@ const DefaultBtn: React.FC<Props> = ({
 
 		md:h-[5.2rem] md:w-[5.2rem]
 		`,
+		modalDefault: `
+			w-fit h-[5.2rem]
+			p-[1.7rem]
+			rounded-[1rem]
+			flex items-center justify-center
+			${isPrimary ? "bg-secondary-btn-300" : "bg-secondary-btn-100"}
+			${
+				isPrimary
+					? "shadow-[inset_0rem_-0.4rem_0rem_#6B8997]"
+					: "shadow-[inset_0rem_-0.4rem_0rem_#CC8B13]"
+			}
+			${isPrimary ? "hover:bg-secondary-btn-400" : "hover:bg-secondary-btn-200"}
+		`,
 	};
 
 	/* custom framer-motion animation for each btntype*/
@@ -149,7 +163,6 @@ const DefaultBtn: React.FC<Props> = ({
 			initial: "initial",
 			animate: "onToggleStateChange",
 			transition: "onToggleStateChangeTransition",
-			// whileHover: markToggleActive ? (isMarkX ? "" : "whileHover") : isMarkX ? "" : "",
 		},
 	};
 
