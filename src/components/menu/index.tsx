@@ -1,3 +1,5 @@
+"use client";
+
 import clsx from "clsx";
 import React from "react";
 import Logo from "../logo";
@@ -6,6 +8,7 @@ import DefaultBtn from "../button/defaultbtn";
 
 const Menu: React.FC = () => {
 	//TODO: add statemanagement no Props for this one
+
 	return (
 		<section
 			className={clsx(
@@ -22,7 +25,7 @@ const Menu: React.FC = () => {
 				btntype={"newgame"}
 				isPrimary={false}
 				title={"NEW GAME (VS CPU)"}
-				onClick={function () {
+				handleClick={function () {
 					throw new Error("Function not implemented.");
 				}}
 			/>
@@ -30,7 +33,7 @@ const Menu: React.FC = () => {
 				btntype={"newgame"}
 				isPrimary={true}
 				title={"NEW GAME (VS PLAYER)"}
-				onClick={function () {
+				handleClick={function () {
 					throw new Error("Function not implemented.");
 				}}
 			/>
