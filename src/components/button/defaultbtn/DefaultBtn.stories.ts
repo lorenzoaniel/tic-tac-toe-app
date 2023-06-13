@@ -6,7 +6,7 @@ const meta: Meta<typeof DefaultBtn> = {
 	component: DefaultBtn,
 	argTypes: {
 		btntype: {
-			options: ["marktoggle", "test", "newgame", "restart", "modaldefault"],
+			options: ["marktoggle", "newgame", "restart", "modaldefault"],
 			control: { type: "select" },
 		},
 		markToggleActive: {

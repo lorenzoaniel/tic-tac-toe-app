@@ -3,12 +3,12 @@ import { motion } from "framer-motion";
 import React from "react";
 
 interface Props {
-	btntype: "marktoggle" | "newgame" | "restart" | "modalDefault";
+	btntype: "marktoggle" | "newgame" | "restart" | "modaldefault";
 	markToggleActive?: boolean; //only used when btntype is marktoggle
 	isMarkX?: boolean; //only used when btntype is marktoggle
 	title?: string;
 	isPrimary?: boolean;
-	onClick: () => any;
+	handleClick: () => any;
 }
 
 //TODO: need framer animation
@@ -17,7 +17,7 @@ const DefaultBtn: React.FC<Props> = ({
 	btntype,
 	markToggleActive,
 	isMarkX,
-	onClick,
+	handleClick,
 	title,
 	isPrimary,
 }) => {
@@ -29,7 +29,7 @@ const DefaultBtn: React.FC<Props> = ({
 				<path
 					d="M15.002 1.147 32 18.145 48.998 1.147a3 3 0 0 1 4.243 0l9.612 9.612a3 3 0 0 1 0 4.243L45.855 32l16.998 16.998a3 3 0 0 1 0 4.243l-9.612 9.612a3 3 0 0 1-4.243 0L32 45.855 15.002 62.853a3 3 0 0 1-4.243 0L1.147 53.24a3 3 0 0 1 0-4.243L18.145 32 1.147 15.002a3 3 0 0 1 0-4.243l9.612-9.612a3 3 0 0 1 4.243 0Z"
 					fill={markToggleActive ? "#1A2A33" : "#A8A8A8"}
-					fill-rule="evenodd"
+					fillRule="evenodd"
 				/>
 			</svg>
 		) : (
@@ -68,25 +68,13 @@ const DefaultBtn: React.FC<Props> = ({
 				/>
 			</svg>
 		),
-		modalDefault: <h3 className={clsx("text-heading-xs text-primary-text-100")}>{title}</h3>,
+		modaldefault: <h3 className={clsx("text-heading-xs text-primary-text-100")}>{title}</h3>,
 	};
 
 	/* custom stying for each btntype*/
 	const styling: { [key: string]: string } = {
-		test: `
-			h-[5.4rem] w-[13.199rem] bg-secondary-btn-100
-		`,
 		marktoggle: `
 			h-[5.4rem] w-[13.199rem]
-			${
-				markToggleActive
-					? isMarkX
-						? "bg-secondary-btn-300"
-						: "bg-transparent hover:bg-[#A8BFC90D]"
-					: isMarkX
-					? "bg-transparent hover:bg-[#A8BFC90D]"
-					: "bg-secondary-btn-300"
-			}
 			rounded-[1rem]
 			flex justify-center items-center
 
@@ -95,50 +83,82 @@ const DefaultBtn: React.FC<Props> = ({
 		newgame: `
 			h-[5.6rem] w-[32.7rem]
 			flex justify-center
-			${
-				isPrimary
-					? "bg-primary-btn-100 hover:bg-primary-btn-200"
-					: "bg-secondary-btn-100 hover:bg-secondary-btn-200"
-			}
 			rounded-[1.5rem]
+			
 			${
 				isPrimary
 					? "shadow-[inset_0rem_-0.8rem_0rem_#118C87]"
 					: "shadow-[inset_0rem_-0.8rem_0rem_#CC8B13]"
 			}
-			
 
 			md:h-[6.7rem] md:w-[46rem]
 		`,
 		restart: `
-		h-[4rem] w-[4rem]
-		bg-secondary-btn-300
-		rounded-[0.5rem]
-		shadow-[inset_0rem_-0.4rem_0rem_#6B8997]
-		flex justify-center items-center
+			h-[4rem] w-[4rem]
+			rounded-[0.5rem]
+			shadow-[inset_0rem_-0.4rem_0rem_#6B8997]
+			flex justify-center items-center
 
-		hover:bg-secondary-btn-400
-
-		md:h-[5.2rem] md:w-[5.2rem]
+			md:h-[5.2rem] md:w-[5.2rem]
 		`,
-		modalDefault: `
+		modaldefault: `
 			w-fit h-[5.2rem]
 			p-[1.7rem]
 			rounded-[1rem]
 			flex items-center justify-center
-			${isPrimary ? "bg-secondary-btn-300" : "bg-secondary-btn-100"}
 			${
 				isPrimary
 					? "shadow-[inset_0rem_-0.4rem_0rem_#6B8997]"
 					: "shadow-[inset_0rem_-0.4rem_0rem_#CC8B13]"
 			}
-			${isPrimary ? "hover:bg-secondary-btn-400" : "hover:bg-secondary-btn-200"}
 		`,
+	};
+
+	/* FRAMER MOTION */
+
+	/*
+  	framer default hover animation
+	*/
+
+	const defaultOnClick = {
+		transform: "translateY(0.4rem)",
+	};
+
+	const _onClickDefault: { [key: string]: {} } = {
+		newgame: {
+			transform: "translateY(0.8rem)",
+			boxShadow: [
+				`inset 0rem -0.8rem 0rem ${isPrimary ? "#118C87" : "#CC8B13"}`,
+				`inset 0rem 0rem 0rem ${isPrimary ? "#118C87" : "#CC8B13"}`,
+			],
+			backgroundColor: isPrimary ? "#31C3BD" : "#F2B137",
+		},
+		restart: {
+			...defaultOnClick,
+			boxShadow: ["inset 0rem -0.4rem 0rem #6B8997", "inset 0rem 0rem 0rem #6B8997"],
+			backgroundColor: "#A8BFC9",
+		},
+		modaldefault: {
+			...defaultOnClick,
+			boxShadow: [
+				`inset 0rem -0.4rem 0rem ${isPrimary ? "#6B8997" : "#CC8B13"}`,
+				`inset 0rem 0rem 0rem ${isPrimary ? "#6B8997" : "#CC8B13"}`,
+			],
+		},
 	};
 
 	/* custom framer-motion animation for each btntype*/
 	const animation: { [key: string]: {} } = {
 		marktoggle: {
+			initial: {
+				backgroundColor: markToggleActive
+					? isMarkX
+						? "#A8BFC9"
+						: "transparent"
+					: isMarkX
+					? "transparent"
+					: "#A8BFC9",
+			},
 			onToggleStateChange: markToggleActive
 				? isMarkX
 					? { opacity: [1, 0.5, 1] }
@@ -146,11 +166,36 @@ const DefaultBtn: React.FC<Props> = ({
 				: isMarkX
 				? { opacity: [0, 0.5, 1] }
 				: { opacity: [1, 0.5, 1] },
-			onToggleStateChangeTransition: {
-				ease: "easeInOut",
-				duration: 1,
+			whileHover: {
+				backgroundColor: "#A8BFC90D",
 			},
-			whileHover: { backgroundColor: "rgba(168, 191, 201, 0.05)" },
+		},
+		newgame: {
+			initial: {
+				backgroundColor: isPrimary ? "#31C3BD" : "#F2B137",
+			},
+			whileTap: _onClickDefault.newgame,
+			whileHover: {
+				backgroundColor: isPrimary ? "#65E9E4" : "#FFC860",
+			},
+		},
+		restart: {
+			initial: {
+				backgroundColor: "#A8BFC9",
+			},
+			whileTap: _onClickDefault.restart,
+			whileHover: {
+				backgroundColor: "#DBE8ED",
+			},
+		},
+		modaldefault: {
+			initial: {
+				backgroundColor: isPrimary ? "#A8BFC9" : "#F2B137",
+			},
+			whileTap: _onClickDefault.modaldefault,
+			whileHover: {
+				backgroundColor: isPrimary ? "#DBE8ED" : "#FFC860",
+			},
 		},
 	};
 
@@ -162,7 +207,22 @@ const DefaultBtn: React.FC<Props> = ({
 		marktoggle: {
 			initial: "initial",
 			animate: "onToggleStateChange",
-			transition: "onToggleStateChangeTransition",
+			whileHover: markToggleActive ? (isMarkX ? "" : "whileHover") : isMarkX ? "whileHover" : "",
+		},
+		newgame: {
+			initial: "initial",
+			whileTap: "whileTap",
+			whileHover: "whileHover",
+		},
+		restart: {
+			initial: "initial",
+			whileTap: "whileTap",
+			whileHover: "whileHover",
+		},
+		modaldefault: {
+			initial: "initial",
+			whileTap: "whileTap",
+			whileHover: "whileHover",
 		},
 	};
 
@@ -170,7 +230,7 @@ const DefaultBtn: React.FC<Props> = ({
 		<motion.button
 			{...motionProps[btntype]}
 			variants={animation[btntype]}
-			onClick={onClick}
+			onClick={handleClick}
 			className={clsx("defaultbtn", styling[btntype])}
 		>
 			{structure[btntype]}
