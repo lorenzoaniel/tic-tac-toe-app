@@ -23,7 +23,7 @@ const MarkToggleBtn: React.FC<Props> = ({ markToggleActive }) => {
 				btntype={"marktoggle"}
 				markToggleActive={markToggleActive}
 				isMarkX={true}
-				onClick={function () {
+				handleClick={function () {
 					throw new Error("Function not implemented.");
 				}}
 			/>
@@ -31,7 +31,7 @@ const MarkToggleBtn: React.FC<Props> = ({ markToggleActive }) => {
 				btntype={"marktoggle"}
 				markToggleActive={markToggleActive}
 				isMarkX={false}
-				onClick={function () {
+				handleClick={function () {
 					throw new Error("Function not implemented.");
 				}}
 			/>
