@@ -4,11 +4,19 @@ import PlayerMark from ".";
 const meta: Meta<typeof PlayerMark> = {
 	title: "components/PlayerMark",
 	component: PlayerMark,
-	// This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
+	argTypes: {
+		markToggleActive: {
+			control: { type: "boolean" },
+		},
+	},
 	tags: ["autodocs"],
 };
 
 export default meta;
 type Story = StoryObj<typeof PlayerMark>;
 
-export const Primary: Story = {};
+export const Primary: Story = {
+	args: {
+		markToggleActive: false,
+	},
+};
