@@ -4,7 +4,7 @@ import clsx from "clsx";
 import React from "react";
 import Logo from "../logo";
 import PlayerMark from "../playermark";
-import DefaultBtn from "../button/defaultbtn";
+import NewGame from "../button/newgame";
 
 const Menu: React.FC = () => {
 	//TODO: add statemanagement no Props for this one
@@ -21,21 +21,19 @@ const Menu: React.FC = () => {
 		>
 			<Logo />
 			<PlayerMark markToggleActive={false} />
-			<DefaultBtn
-				btntype={"newgame"}
+			<NewGame
 				isPrimary={false}
-				title={"NEW GAME (VS CPU)"}
 				handleClick={function () {
 					throw new Error("Function not implemented.");
 				}}
+				newGameIsCpu={true}
 			/>
-			<DefaultBtn
-				btntype={"newgame"}
+			<NewGame
 				isPrimary={true}
-				title={"NEW GAME (VS PLAYER)"}
 				handleClick={function () {
 					throw new Error("Function not implemented.");
 				}}
+				newGameIsCpu={false}
 			/>
 		</section>
 	);
