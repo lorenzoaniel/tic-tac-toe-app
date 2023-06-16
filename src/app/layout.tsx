@@ -9,7 +9,9 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<html className={clsx("html", "h-[100vh] text-[62.5%]")} lang="en">
-			<body className={clsx("body", "h-full text-[1.6rem] bg-yellow-100")}>{children}</body>
+			<body className={clsx("body", "h-full text-[1.6rem] bg-yellow-100 hide-scrollbar")}>
+				{children}
+			</body>
 		</html>
 	);
 }
