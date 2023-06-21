@@ -20,6 +20,7 @@ module.exports = {
 					},
 					text: {
 						100: "#1A2A33",
+						200: "#31C3BD",
 					},
 				},
 				secondary: {
