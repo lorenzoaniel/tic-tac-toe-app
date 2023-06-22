@@ -12,3 +12,5 @@ export default meta;
 type Story = StoryObj<typeof Menu>;
 
 export const Primary: Story = {};
+
+export const ModalActive: Story = {};
