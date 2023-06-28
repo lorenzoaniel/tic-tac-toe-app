@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import Menu from ".";
+import { WinActive } from "../modal/Modal.stories";
+import Modal from "../modal";
 
 const meta: Meta<typeof Menu> = {
 	title: "components/Menu",
@@ -9,8 +11,6 @@ const meta: Meta<typeof Menu> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof Menu>;
+type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {};
-
-export const ModalActive: Story = {};

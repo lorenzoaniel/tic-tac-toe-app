@@ -157,17 +157,11 @@ const Modal: React.FC<Props> = ({ modalActiveStatus }) => {
 				modalActiveStatus.tiedActive
 			}
 		>
-			<AlertDialog.Portal
-				className={clsx(`
-          h-screen w-screen 
-          flex
-        `)}
-			>
+			<AlertDialog.Portal>
 				<AlertDialog.Overlay
 					className={clsx(
 						"ModalOverlay",
-						`
-              
+						` 
               bg-black opacity-50 mix-blend-blend
               -z-10
             `
@@ -177,6 +171,7 @@ const Modal: React.FC<Props> = ({ modalActiveStatus }) => {
 					className={clsx(
 						"ModalDialogContent",
 						`
+							absolute top-[50%]
               h-[22.8rem] w-full
               bg-primary-bg-200
               p-[4.8rem]
@@ -191,14 +186,26 @@ const Modal: React.FC<Props> = ({ modalActiveStatus }) => {
             `
 					)}
 				>
-					{(modalActiveStatus.lostActive || modalActiveStatus.winActive) && config.title.winOrLose}
-					{(modalActiveStatus.restartActive || modalActiveStatus.tiedActive) &&
-						config.title.restartOrTie}
-					{(modalActiveStatus.lostActive ||
-						modalActiveStatus.winActive ||
-						modalActiveStatus.tiedActive) &&
-						config.buttons.winLoseTie}
-					{modalActiveStatus.restartActive && config.buttons.restartOnly}
+					{
+						// Renders title section for win or loss variant
+						(modalActiveStatus.lostActive || modalActiveStatus.winActive) && config.title.winOrLose
+					}
+					{
+						// Renders title section for restart or tied variant
+						(modalActiveStatus.restartActive || modalActiveStatus.tiedActive) &&
+							config.title.restartOrTie
+					}
+					{
+						// Renders button section for win/loss/tied variant
+						(modalActiveStatus.lostActive ||
+							modalActiveStatus.winActive ||
+							modalActiveStatus.tiedActive) &&
+							config.buttons.winLoseTie
+					}
+					{
+						// Renders button section for restart variant
+						modalActiveStatus.restartActive && config.buttons.restartOnly
+					}
 				</AlertDialog.Content>
 			</AlertDialog.Portal>
 		</AlertDialog.Root>

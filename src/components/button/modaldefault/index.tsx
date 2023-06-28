@@ -51,7 +51,7 @@ const ModalDefault: React.FC<Props> = ({ title, handleClick, isPrimary }) => {
         `
 			)}
 		>
-			<h3 className={clsx("text-heading-xs text-primary-text-100")}>{title}</h3>,
+			<h3 className={clsx("text-heading-xs text-primary-text-100")}>{title}</h3>
 		</motion.button>
 	);
 };

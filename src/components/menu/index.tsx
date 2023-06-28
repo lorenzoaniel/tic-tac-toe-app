@@ -5,6 +5,7 @@ import React from "react";
 import Logo from "../logo";
 import PlayerMark from "../playermark";
 import NewGame from "../button/newgame";
+import Modal from "../modal";
 
 const Menu: React.FC = () => {
 	//TODO: add statemanagement no Props for this one
