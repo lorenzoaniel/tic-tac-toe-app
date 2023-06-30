@@ -16,6 +16,9 @@ const Tile: React.FC<Props> = ({ tileStatus }) => {
 			whileHover: {},
 		},
 		svgOutline: {
+			initial: {
+				display: "none",
+			},
 			whileHover: {
 				display: "inline",
 			},
@@ -27,6 +30,7 @@ const Tile: React.FC<Props> = ({ tileStatus }) => {
 			whileHover: "whileHover",
 		},
 		svgOutline: {
+			initial: animated.svgOutline.initial, // being orchestrated by parent component so cant be string
 			whileHover: animated.svgOutline.whileHover, // being orchestrated by parent component so cant be string
 		},
 	};
@@ -66,7 +70,6 @@ const Tile: React.FC<Props> = ({ tileStatus }) => {
 				<motion.svg
 					{...motionProps.svgOutline}
 					variants={animated.svgOutline}
-					className={clsx(`hidden`)}
 					width="40"
 					height="40"
 					viewBox="0 0 64 64"
@@ -83,7 +86,6 @@ const Tile: React.FC<Props> = ({ tileStatus }) => {
 				<motion.svg
 					{...motionProps.svgOutline}
 					variants={animated.svgOutline}
-					className={clsx(`hidden`)}
 					width="40"
 					height="40"
 					viewBox="0 0 66 66"
