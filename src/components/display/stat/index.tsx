@@ -17,6 +17,8 @@ const StatDisplay: React.FC<Props> = ({ playerIdentity, score, isTie }) => {
           h-[6.4rem] w-[9.6rem]
           flex flex-col justify-center items-center
           rounded-[1rem]
+
+					md:h-[7.2rem] md:w-[14rem]
         `,
 				{
 					"bg-primary-btn-100": playerIdentity.player1,
