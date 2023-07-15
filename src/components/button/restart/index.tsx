@@ -2,9 +2,11 @@ import { clsx } from "clsx";
 import { motion } from "framer-motion";
 import React from "react";
 
-const Restart: React.FC = () => {
-	//TODO: add dispatch for reset
+interface Props {
+	handleClick: () => void;
+}
 
+const Restart: React.FC<Props> = ({ handleClick }) => {
 	const animation = {
 		initial: {
 			backgroundColor: "#A8BFC9",
@@ -29,7 +31,7 @@ const Restart: React.FC = () => {
 		<motion.button
 			{...motionProps}
 			variants={animation}
-			onClick={() => {}}
+			onClick={handleClick}
 			className={clsx(
 				"defaultbtn",
 				`
