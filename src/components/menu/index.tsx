@@ -5,9 +5,21 @@ import React from "react";
 import Logo from "../logo";
 import PlayerMark from "../playermark";
 import NewGame from "../button/newgame";
+import { useStore } from "@/state/useStore";
+import { Store } from "@/interfaces/store";
 
 const Menu: React.FC = () => {
-	//TODO: add statemanagement no Props for this one
+	//SELECTORS
+	let selector = {
+		markTypeStatePlayer1: useStore((state: Store) => state.mainData.player1.markTypeX),
+		markTypeStateOpponent: useStore((state: Store) => state.mainData.opponent.markTypeX),
+	};
+
+	//DISPATCH
+	let dispatch = {
+		setMarkType: useStore((state: Store) => state.setMarkType),
+		setMenuState: useStore((state: Store) => state.setMenuState),
+	};
 
 	return (
 		<section
@@ -17,7 +29,6 @@ const Menu: React.FC = () => {
 					h-[42.9rem] w-[32.7rem]",
 					bg-transparent
 					flex flex-col items-center justify-between
-					self-center justify-self-center
 				`,
 				`
 					md:h-[47.1rem] md:w-[46rem]
@@ -25,18 +36,29 @@ const Menu: React.FC = () => {
 			)}
 		>
 			<Logo />
-			<PlayerMark markToggleActive={false} />
+			{/* PICK PLAYER 1'S MARK */}
+			<PlayerMark
+				markToggleActive={selector.markTypeStatePlayer1}
+				handleClick={() => {
+					dispatch.setMarkType("player1", !selector.markTypeStatePlayer1);
+					dispatch.setMarkType("opponent", !selector.markTypeStateOpponent);
+				}}
+			/>
+			{/* NEW GAME (VS CPU) */}
 			<NewGame
 				isPrimary={false}
-				handleClick={function () {
-					throw new Error("Function not implemented.");
+				handleClick={() => {
+					//TODO: add dispatch for opponent type
+					dispatch.setMenuState(false);
 				}}
 				newGameIsCpu={true}
 			/>
+			{/* NEW GAME (VS PLAYER) */}
 			<NewGame
 				isPrimary={true}
-				handleClick={function () {
-					throw new Error("Function not implemented.");
+				handleClick={() => {
+					//TODO: add dispatch for opponent type
+					dispatch.setMenuState(false);
 				}}
 				newGameIsCpu={false}
 			/>
