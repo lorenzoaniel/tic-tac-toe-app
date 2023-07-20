@@ -3,12 +3,49 @@ import clsx from "clsx";
 import React from "react";
 
 interface Props {
-	playerIdentity: PlayerIdentity;
+	playersInPlay?: PlayerIdentity;
+	markTypeIsX?: boolean | null;
+	isTie?: boolean;
 	score: number;
-	isTie: boolean;
 }
 
-const StatDisplay: React.FC<Props> = ({ playerIdentity, score, isTie }) => {
+const generateTitle = (playersInPlay: PlayerIdentity, markTypeisX: boolean | null): string => {
+	let result: string = "TIES";
+
+	const title: { [key: string]: { [key: string]: string } } = {
+		player1: {
+			x: "X (P1)",
+			o: "O (P1)",
+		},
+		player2: {
+			x: "X (P2)",
+			o: "O (P2)",
+		},
+		playercpu: {
+			x: "X (CPU)",
+			o: "O (CPU)",
+		},
+	};
+
+	Object.entries(playersInPlay).forEach(([key, val]) => {
+		//if key value is true
+		if (val && markTypeisX !== null) {
+			// title<playertype><if true x otherwise o>
+			result = title[key][markTypeisX ? "x" : "o"];
+		}
+	});
+
+	return result;
+};
+
+const StatDisplay: React.FC<Props> = ({
+	playersInPlay = { player1: false, player2: false, playercpu: false },
+	score,
+	isTie = false,
+	markTypeIsX = null,
+}) => {
+	//players, opponent, player1 from store
+
 	return (
 		<div
 			className={clsx(
@@ -21,8 +58,8 @@ const StatDisplay: React.FC<Props> = ({ playerIdentity, score, isTie }) => {
 					md:h-[7.2rem] md:w-[14rem]
         `,
 				{
-					"bg-primary-btn-100": playerIdentity.player1,
-					"bg-secondary-btn-100": playerIdentity.player2 || playerIdentity.playercpu,
+					"bg-primary-btn-100": playersInPlay.player1,
+					"bg-secondary-btn-100": playersInPlay.player2 || playersInPlay.playercpu,
 					"bg-secondary-btn-300": isTie,
 				}
 			)}
@@ -36,13 +73,7 @@ const StatDisplay: React.FC<Props> = ({ playerIdentity, score, isTie }) => {
           `
 				)}
 			>
-				{playerIdentity.player1
-					? "X (YOU)"
-					: playerIdentity.player2
-					? "O (P2)"
-					: playerIdentity.playercpu
-					? "O (CPU)"
-					: "TIES"}
+				{generateTitle(playersInPlay, markTypeIsX)}
 			</h3>
 			<h2
 				className={clsx(
