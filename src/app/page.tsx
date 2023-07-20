@@ -8,7 +8,6 @@ import clsx from "clsx";
 
 export default function Home() {
 	const menuState = useStore((state: Store) => state.mainData.menu);
-	console.log(menuState);
 
 	return (
 		<main
