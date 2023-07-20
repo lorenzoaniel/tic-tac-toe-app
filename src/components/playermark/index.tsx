@@ -1,13 +1,13 @@
 import clsx from "clsx";
-import React, { useState } from "react";
+import React from "react";
 import MarkToggle from "../button/marktoggle";
 
 interface Props {
 	markToggleActive: boolean;
+	handleClick: () => void;
 }
 
-const PlayerMark: React.FC<Props> = ({ markToggleActive }) => {
-	const [testState, setTestState] = useState(false);
+const PlayerMark: React.FC<Props> = ({ markToggleActive, handleClick }) => {
 	const title = "PICK PLAYER 1'S MARK";
 	const reminder = "REMEMBER : X GOES FIRST";
 
@@ -32,20 +32,8 @@ const PlayerMark: React.FC<Props> = ({ markToggleActive }) => {
 					"md:w-[41.2rem]"
 				)}
 			>
-				<MarkToggle
-					markToggleActive={testState}
-					isMarkX={true}
-					handleClick={() => {
-						setTestState(true);
-					}}
-				/>
-				<MarkToggle
-					markToggleActive={testState}
-					isMarkX={false}
-					handleClick={() => {
-						setTestState(false);
-					}}
-				/>
+				<MarkToggle markToggleActive={markToggleActive} isMarkX={true} handleClick={handleClick} />
+				<MarkToggle markToggleActive={markToggleActive} isMarkX={false} handleClick={handleClick} />
 			</div>
 			<h2 className={clsx("player-mark-title", "text-body text-secondary-text-300 opacity-50")}>
 				{reminder}
