@@ -3,12 +3,20 @@ import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import { ModalActiveStatus } from "@/interfaces/modalActiveStatus";
 import clsx from "clsx";
 import ModalDefault from "../button/modaldefault";
+import { useStore } from "@/state/useStore";
+import { Store } from "@/interfaces/store";
 
 interface Props {
 	modalActiveStatus: ModalActiveStatus;
 }
 
 const Modal: React.FC<Props> = ({ modalActiveStatus }) => {
+	//DISPATCH
+	let dispatch = {
+		resetData: useStore((state: Store) => state.resetData),
+		restartGame: useStore((state: Store) => state.restartGame),
+	};
+
 	const config = {
 		title: {
 			winOrLose: (
@@ -132,16 +140,12 @@ const Modal: React.FC<Props> = ({ modalActiveStatus }) => {
 					<ModalDefault
 						title={"NO, CANCEL"}
 						isPrimary={true}
-						handleClick={function (): void {
-							throw new Error("Function not implemented.");
-						}}
+						handleClick={() => dispatch.resetData()}
 					/>
 					<ModalDefault
 						title={"YES, RESTART"}
 						isPrimary={false}
-						handleClick={function (): void {
-							throw new Error("Function not implemented.");
-						}}
+						handleClick={() => dispatch.restartGame()}
 					/>
 				</div>
 			),
