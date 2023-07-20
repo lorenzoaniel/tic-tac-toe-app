@@ -17,6 +17,14 @@ const Board: React.FC = () => {
 	let selector = {
 		gameModalState: useStore((state: Store) => state.mainData.gameModal),
 		scoreState: useStore((state: Store) => state.mainData.score),
+		playerTypeMark: {
+			player1: useStore((state: Store) => state.mainData.player1.markTypeX),
+			opponent: useStore((state: Store) => state.mainData.opponent.markTypeX),
+		},
+		playersInPlay: {
+			player1: useStore((state: Store) => state.mainData.player1.players),
+			opponent: useStore((state: Store) => state.mainData.opponent.players),
+		},
 	};
 
 	//TODO: replace with state
@@ -26,26 +34,7 @@ const Board: React.FC = () => {
 		isMarkX: true,
 	};
 
-	//TODO: replace with state
-	const dummyDataStat = {
-		p1X: {
-			player1: true,
-			player2: false,
-			playercpu: false,
-		},
-		ties: {
-			player1: false,
-			player2: false,
-			playercpu: false,
-		},
-		pCpuX: {
-			player1: false,
-			player2: false,
-			playercpu: true,
-		},
-	};
 	//DISPATCH
-
 	let dispatch = {
 		handleRestart: useStore((state: Store) => state.setModalType),
 	};
@@ -85,19 +74,15 @@ const Board: React.FC = () => {
 				{createTiles()}
 
 				<StatDisplay
-					playerIdentity={dummyDataStat.p1X}
+					playersInPlay={selector.playersInPlay.player1}
 					score={selector.scoreState.player1}
-					isTie={false}
+					markTypeIsX={selector.playerTypeMark.player1}
 				/>
+				<StatDisplay score={selector.scoreState.ties} isTie={true} />
 				<StatDisplay
-					playerIdentity={dummyDataStat.ties}
-					score={selector.scoreState.ties}
-					isTie={true}
-				/>
-				<StatDisplay
-					playerIdentity={dummyDataStat.pCpuX}
+					playersInPlay={selector.playersInPlay.opponent}
 					score={selector.scoreState.opponent}
-					isTie={false}
+					markTypeIsX={selector.playerTypeMark.opponent}
 				/>
 				{Object.values(selector.gameModalState).some((value) => value === true) && (
 					<Modal modalActiveStatus={selector.gameModalState} />
