@@ -11,16 +11,20 @@ import { Store } from "@/interfaces/store";
 const Menu: React.FC = () => {
 	//SELECTORS
 	let selector = {
-		markTypeStatePlayer1: useStore((state: Store) => state.mainData.player1.markTypeX),
-		markTypeStateOpponent: useStore((state: Store) => state.mainData.opponent.markTypeX),
+		playerTypeMark: {
+			player1: useStore((state: Store) => state.mainData.player1.markTypeX),
+			opponent: useStore((state: Store) => state.mainData.opponent.markTypeX),
+		},
 	};
 
 	//DISPATCH
 	let dispatch = {
 		setMarkType: useStore((state: Store) => state.setMarkType),
 		setMenuState: useStore((state: Store) => state.setMenuState),
+		setOpponentType: useStore((state: Store) => state.setOpponentType),
 	};
-
+	// console.log(selector.markTypeStatePlayer1, "p1 before comp");
+	// console.log(selector.markTypeStateOpponent, "opp before");
 	return (
 		<section
 			className={clsx(
@@ -38,17 +42,26 @@ const Menu: React.FC = () => {
 			<Logo />
 			{/* PICK PLAYER 1'S MARK */}
 			<PlayerMark
-				markToggleActive={selector.markTypeStatePlayer1}
+				markToggleActive={selector.playerTypeMark.player1}
 				handleClick={() => {
-					dispatch.setMarkType("player1", !selector.markTypeStatePlayer1);
-					dispatch.setMarkType("opponent", !selector.markTypeStateOpponent);
+					/* 
+						passes the opposite value of player1 which will reflect
+						in markToggleActive and activate button toggle effect 
+					*/
+					dispatch.setMarkType(!selector.playerTypeMark.player1);
 				}}
 			/>
 			{/* NEW GAME (VS CPU) */}
 			<NewGame
 				isPrimary={false}
 				handleClick={() => {
-					//TODO: add dispatch for opponent type
+					/* 
+						basically sets opponent type to cpu and false for p2
+						after which it changes the menu state so that Board component will be
+						displayed instead
+					*/
+					dispatch.setOpponentType("playercpu", true);
+					dispatch.setOpponentType("player2", false);
 					dispatch.setMenuState(false);
 				}}
 				newGameIsCpu={true}
@@ -57,7 +70,9 @@ const Menu: React.FC = () => {
 			<NewGame
 				isPrimary={true}
 				handleClick={() => {
-					//TODO: add dispatch for opponent type
+					/* same as new game CPU but viceversa */
+					dispatch.setOpponentType("playercpu", false);
+					dispatch.setOpponentType("player2", true);
 					dispatch.setMenuState(false);
 				}}
 				newGameIsCpu={false}
