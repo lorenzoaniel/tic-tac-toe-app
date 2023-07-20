@@ -37,10 +37,7 @@ const defaultMainData = {
 		markTypeX: false,
 		tiles: {},
 	},
-	turn: {
-		xTurn: true,
-		oTurn: false,
-	},
+	isXTurn: true,
 };
 
 //need this to insure that server and client information is synced if there is any data in localStorage
@@ -91,11 +88,11 @@ export const useStore = create<Store>()(
 					},
 				}));
 			},
-			setTurn: (turnType: "xTurn" | "oTurn", status: boolean) => {
+			setTurn: (status: boolean) => {
 				set((state: Store) => ({
 					mainData: {
 						...state.mainData,
-						turn: { ...state.mainData.turn, [turnType]: status },
+						isXTurn: status,
 					},
 				}));
 			},

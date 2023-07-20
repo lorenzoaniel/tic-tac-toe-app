@@ -6,8 +6,6 @@ interface Props {
 }
 
 const TurnDisplay: React.FC<Props> = ({ isTurnX }) => {
-	//TODO: add selector for TURN value using global state
-
 	return (
 		<div
 			className={clsx(

@@ -8,7 +8,7 @@ export interface StoreActions {
 		modalType: "winActive" | "lostActive" | "restartActive" | "tiedActive",
 		status: boolean
 	) => void;
-	setTurn: (turnType: "xTurn" | "oTurn", status: boolean) => void;
+	setTurn: (status: boolean) => void;
 	setOpponentType: (opponentType: "player1" | "player2" | "playercpu", status: boolean) => void;
 	setMarkType: (status: boolean) => void;
 	resetData: () => void;

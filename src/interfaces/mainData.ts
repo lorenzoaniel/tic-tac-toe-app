@@ -17,8 +17,5 @@ export type MainData = {
 	};
 	player1: playerInfo;
 	opponent: playerInfo;
-	turn: {
-		xTurn: boolean;
-		oTurn: boolean;
-	};
+	isXTurn: boolean;
 };
