@@ -23,8 +23,7 @@ const Menu: React.FC = () => {
 		setMenuState: useStore((state: Store) => state.setMenuState),
 		setOpponentType: useStore((state: Store) => state.setOpponentType),
 	};
-	// console.log(selector.markTypeStatePlayer1, "p1 before comp");
-	// console.log(selector.markTypeStateOpponent, "opp before");
+
 	return (
 		<section
 			className={clsx(
