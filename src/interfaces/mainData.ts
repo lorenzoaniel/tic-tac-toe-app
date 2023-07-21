@@ -1,4 +1,5 @@
 import { playerInfo } from "./playerInfo";
+import type TileStatus from "./tileStatus";
 
 export type GameModal = {
 	winActive: boolean;
@@ -17,5 +18,6 @@ export type MainData = {
 	};
 	player1: playerInfo;
 	opponent: playerInfo;
+	tiles: Record<number, TileStatus>;
 	isXTurn: boolean;
 };

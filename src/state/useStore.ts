@@ -5,6 +5,22 @@ import TileStatus from "@/interfaces/tileStatus";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
+const generateInitialTileStatuses = (): Record<number, TileStatus> => {
+	let tiles: Record<number, TileStatus> = {};
+
+	for (let i = 1; i <= 9; i++) {
+		tiles[i] = {
+			isMarkSelected: false,
+			isPlayer1Tile: false,
+			isMarkX: false,
+			tileID: i,
+			pos: { x: Math.floor((i - 1) % 3), y: Math.floor((i - 1) / 3) },
+		};
+	}
+
+	return tiles;
+};
+
 // used as default values for loadPersistedState
 const defaultMainData = {
 	menu: true,
@@ -26,7 +42,6 @@ const defaultMainData = {
 			playercpu: false,
 		},
 		markTypeX: true,
-		tiles: {},
 	},
 	opponent: {
 		players: {
@@ -35,8 +50,8 @@ const defaultMainData = {
 			playercpu: false,
 		},
 		markTypeX: false,
-		tiles: {},
 	},
+	tiles: generateInitialTileStatuses(),
 	isXTurn: true,
 };
 
@@ -55,16 +70,12 @@ export const useStore = create<Store>()(
 			mainData: {
 				...loadPersistedState(),
 			},
-			setTile: (player: "player1" | "opponent", tileStatus: TileStatus) => {
+			setTile: (tileStatus: TileStatus) => {
 				set((state: Store) => {
-					const updatedTiles = { ...state.mainData[player].tiles, ...tileStatus };
 					return {
 						mainData: {
 							...state.mainData,
-							[player]: {
-								...state.mainData[player],
-								tiles: updatedTiles,
-							},
+							tiles: { ...state.mainData.tiles, ...tileStatus },
 						},
 					};
 				});

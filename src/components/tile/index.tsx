@@ -1,16 +1,20 @@
 "use client";
 
 import clsx from "clsx";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import TileStatus from "@/interfaces/tileStatus";
 
 interface Props {
-	tileStatus: TileStatus;
+	tileStatusProp: TileStatus;
 	handleClick: () => void;
 }
 
-const Tile: React.FC<Props> = ({ tileStatus }) => {
+const Tile: React.FC<Props> = ({ tileStatusProp }) => {
+	const [tileStatus, setTileStatus] = useState(tileStatusProp);
+
+	// useEffect(() => { },[])
+
 	const animated = {
 		tile: {
 			whileHover: {},

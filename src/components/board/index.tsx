@@ -8,9 +8,9 @@ import Restart from "../button/restart";
 import Tile from "../tile";
 import StatDisplay from "../display/stat";
 import { useStore } from "@/state/useStore";
-import { Store } from "@/interfaces/store";
+import type { Store } from "@/interfaces/store";
 import Modal from "../modal";
-// import { ModalActiveStatus } from "@/interfaces/modalActiveStatus";
+import type TileStatus from "@/interfaces/tileStatus";
 
 const Board: React.FC = () => {
 	//SELECTORS
@@ -21,37 +21,54 @@ const Board: React.FC = () => {
 			player1: useStore((state: Store) => state.mainData.player1.markTypeX),
 			opponent: useStore((state: Store) => state.mainData.opponent.markTypeX),
 		},
+		player1: useStore((state: Store) => state.mainData.player1),
 		playersInPlayState: {
 			player1: useStore((state: Store) => state.mainData.player1.players),
 			opponent: useStore((state: Store) => state.mainData.opponent.players),
 		},
 		isXTurnState: useStore((state: Store) => state.mainData.isXTurn),
-	};
-
-	//TODO: replace with state
-	const dummyDataTile = {
-		isMarkSelected: false,
-		tileID: 1,
-		isMarkX: true,
+		tilesState: useStore((state: Store) => state.mainData.tiles),
 	};
 
 	//DISPATCH
 	let dispatch = {
 		handleRestart: useStore((state: Store) => state.setModalType),
+		setTile: useStore((state: Store) => state.setTile),
 	};
 
 	//TODO: replace with state data
 	const createTiles = () => {
+		let tileData: TileStatus = {
+			isMarkSelected: false,
+			isPlayer1Tile: false,
+			isMarkX: true,
+			tileID: 0,
+			pos: { x: 0, y: 0 },
+		};
+
 		return Array(9)
 			.fill(0)
-			.map(() => (
-				<Tile
-					tileStatus={dummyDataTile}
-					handleClick={function (): void {
-						throw new Error("Function not implemented.");
-					}}
-				/>
-			));
+			.map(async (_, index) => {
+				await dispatch.setTile({
+					...tileData,
+					tileID: index + 1,
+				});
+
+				return (
+					<Tile
+						tileStatusProp={{ ...tileData }}
+						handleClick={() => {
+							dispatch.setTile({
+								isMarkSelected: true,
+								isPlayer1Tile: selector.isXTurnState === selector.player1.markTypeX,
+								isMarkX: true, // relies on isXTurn
+								tileID: 0,
+								pos: { x: 0, y: 0 },
+							});
+						}}
+					/>
+				);
+			});
 	};
 
 	return (
