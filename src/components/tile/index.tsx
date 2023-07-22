@@ -1,19 +1,28 @@
 "use client";
 
 import clsx from "clsx";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import TileStatus from "@/interfaces/tileStatus";
+import { useStore } from "@/state/useStore";
+import { Store } from "@/interfaces/store";
 
 interface Props {
-	tileStatusProp: TileStatus;
-	handleClick: () => void;
+	tileID: number;
 }
 
-const Tile: React.FC<Props> = ({ tileStatusProp }) => {
-	const [tileStatus, setTileStatus] = useState(tileStatusProp);
+const Tile: React.FC<Props> = ({ tileID }) => {
+	const [tileIDState, _] = useState(tileID);
 
-	// useEffect(() => { },[])
+	const selector = {
+		tileState: useStore((state: Store) => state.mainData.tiles[tileIDState]),
+		isXTurnState: useStore((state: Store) => state.mainData.isXTurn),
+		isPlayer1MarkState: useStore((state: Store) => state.mainData.player1.markTypeX),
+	};
+
+	const dispatch = {
+		setTile: useStore((state: Store) => state.setTile),
+		setTurn: useStore((state: Store) => state.setTurn),
+	};
 
 	const animated = {
 		tile: {
@@ -42,9 +51,27 @@ const Tile: React.FC<Props> = ({ tileStatusProp }) => {
 	return (
 		<motion.div
 			{...motionProps.tile}
+			onClick={async () => {
+				// logic that prevents setting tile info if tile already occupied
+				if (!selector.tileState.isMarkSelected) {
+					// if tile not occupied set new tile info, the styling will be reflected via
+					// looking at the specific tile state after change
+					await dispatch.setTile(tileIDState, {
+						...selector.tileState,
+						// converted to true since it is selected when clicked
+						isMarkSelected: true,
+						// compares current turn Mark with player1 mark type and returns result boolean
+						isPlayer1Tile: selector.isXTurnState === selector.isPlayer1MarkState ? true : false,
+						// relies on isXTurn
+						isMarkX: selector.isXTurnState,
+					});
+					// when finished setting tile new info change turn
+					await dispatch.setTurn(!selector.isXTurnState);
+				}
+			}}
 			variants={animated.tile}
 			className={clsx(
-				`Tile-${tileStatus.tileID}`,
+				`Tile-${tileIDState}`,
 				`
           h-[9.6rem] w-[9.6rem]
           bg-primary-bg-200
@@ -55,8 +82,18 @@ const Tile: React.FC<Props> = ({ tileStatusProp }) => {
         `
 			)}
 		>
-			{tileStatus.isMarkSelected ? (
-				tileStatus.isMarkX ? (
+			{/* 
+				This portion will rely on the tile state stored in store
+				any change when tile is clicked will be sent to store and in turn
+				any logic that uses certain states for that particular tile
+				will be reflected here for styling logic and conditions
+
+				breakdown is as follows:
+				checks whether tile has been selected
+				if not enable hover if it is selected show the solid mark shape
+			*/}
+			{selector.tileState.isMarkSelected ? (
+				selector.tileState.isMarkX ? (
 					<svg
 						className="md:h-[6.4rem] md:w-[6.4rem]"
 						width="40"
@@ -84,7 +121,7 @@ const Tile: React.FC<Props> = ({ tileStatusProp }) => {
 						/>
 					</svg>
 				)
-			) : tileStatus.isMarkX ? (
+			) : selector.isXTurnState ? (
 				<motion.svg
 					{...motionProps.svgOutline}
 					variants={animated.svgOutline}
