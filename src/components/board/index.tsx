@@ -10,7 +10,6 @@ import StatDisplay from "../display/stat";
 import { useStore } from "@/state/useStore";
 import type { Store } from "@/interfaces/store";
 import Modal from "../modal";
-import type TileStatus from "@/interfaces/tileStatus";
 
 const Board: React.FC = () => {
 	//SELECTORS
@@ -21,55 +20,33 @@ const Board: React.FC = () => {
 			player1: useStore((state: Store) => state.mainData.player1.markTypeX),
 			opponent: useStore((state: Store) => state.mainData.opponent.markTypeX),
 		},
-		player1: useStore((state: Store) => state.mainData.player1),
 		playersInPlayState: {
 			player1: useStore((state: Store) => state.mainData.player1.players),
 			opponent: useStore((state: Store) => state.mainData.opponent.players),
 		},
 		isXTurnState: useStore((state: Store) => state.mainData.isXTurn),
-		tilesState: useStore((state: Store) => state.mainData.tiles),
 	};
 
 	//DISPATCH
 	let dispatch = {
 		handleRestart: useStore((state: Store) => state.setModalType),
-		setTile: useStore((state: Store) => state.setTile),
 	};
 
-	//TODO: replace with state data
-	const createTiles = () => {
-		let tileData: TileStatus = {
-			isMarkSelected: false,
-			isPlayer1Tile: false,
-			isMarkX: true,
-			tileID: 0,
-			pos: { x: 0, y: 0 },
-		};
-
+	// prevents memory leak from calling this unlimited times
+	// relies on local state in tile component to rerender itself
+	const createTiles = React.useMemo(() => {
 		return Array(9)
 			.fill(0)
-			.map(async (_, index) => {
-				await dispatch.setTile({
-					...tileData,
-					tileID: index + 1,
-				});
-
+			.map((_, index) => {
 				return (
 					<Tile
-						tileStatusProp={{ ...tileData }}
-						handleClick={() => {
-							dispatch.setTile({
-								isMarkSelected: true,
-								isPlayer1Tile: selector.isXTurnState === selector.player1.markTypeX,
-								isMarkX: true, // relies on isXTurn
-								tileID: 0,
-								pos: { x: 0, y: 0 },
-							});
-						}}
+						key={"tileComp" + index}
+						// initially tiles are already set, simply grabs its profile from created tile state in store
+						tileID={index + 1}
 					/>
 				);
 			});
-	};
+	}, []);
 
 	return (
 		<>
@@ -89,7 +66,7 @@ const Board: React.FC = () => {
 				<TurnDisplay isTurnX={selector.isXTurnState} />
 				<Restart handleClick={() => dispatch.handleRestart("restartActive", true)} />
 
-				{createTiles()}
+				{createTiles}
 
 				<StatDisplay
 					playersInPlay={selector.playersInPlayState.player1}
@@ -110,4 +87,4 @@ const Board: React.FC = () => {
 	);
 };
 
-export default Board;
+export default React.memo(Board);
