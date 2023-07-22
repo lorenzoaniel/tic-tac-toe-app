@@ -2,7 +2,7 @@ import { MainData } from "./mainData";
 import TileStatus from "./tileStatus";
 
 export interface StoreActions {
-	setTile: (tileStatus: TileStatus) => void;
+	setTile: (index: number, tileStatus: TileStatus) => void;
 	setMenuState: (status: boolean) => void;
 	setModalType: (
 		modalType: "winActive" | "lostActive" | "restartActive" | "tiedActive",

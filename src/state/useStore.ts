@@ -22,7 +22,7 @@ const generateInitialTileStatuses = (): Record<number, TileStatus> => {
 };
 
 // used as default values for loadPersistedState
-const defaultMainData = {
+const defaultMainData: MainData = {
 	menu: true,
 	gameModal: {
 		winActive: false,
@@ -57,25 +57,22 @@ const defaultMainData = {
 
 //need this to insure that server and client information is synced if there is any data in localStorage
 const loadPersistedState = () => {
-	let persistedState = defaultMainData;
 	const persistedStateString = localStorage.getItem("tictactoe-data");
-	persistedState = persistedStateString ? JSON.parse(persistedStateString) : persistedState;
-
-	return persistedState;
+	return persistedStateString ? JSON.parse(persistedStateString) : defaultMainData;
 };
 
 export const useStore = create<Store>()(
 	persist(
 		(set) => ({
-			mainData: {
+			mainData: <MainData>{
 				...loadPersistedState(),
 			},
-			setTile: (tileStatus: TileStatus) => {
+			setTile: (index: number, tileStatus: TileStatus) => {
 				set((state: Store) => {
 					return {
 						mainData: {
 							...state.mainData,
-							tiles: { ...state.mainData.tiles, ...tileStatus },
+							tiles: { ...state.mainData.tiles, [index]: tileStatus },
 						},
 					};
 				});
