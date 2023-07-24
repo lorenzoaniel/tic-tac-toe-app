@@ -24,8 +24,14 @@ const Board: React.FC = () => {
 			player1: useStore((state: Store) => state.mainData.player1.players),
 			opponent: useStore((state: Store) => state.mainData.opponent.players),
 		},
+		players: {
+			player1: useStore((state: Store) => state.mainData.player1),
+			opponent: useStore((state: Store) => state.mainData.opponent),
+		},
 		isXTurnState: useStore((state: Store) => state.mainData.isXTurn),
 	};
+
+	console.log(selector.players.player1, selector.players.opponent);
 
 	//DISPATCH
 	let dispatch = {

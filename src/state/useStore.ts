@@ -41,6 +41,7 @@ const defaultMainData: MainData = {
 			player2: false,
 			playercpu: false,
 		},
+		tiles: [],
 		markTypeX: true,
 	},
 	opponent: {
@@ -49,6 +50,7 @@ const defaultMainData: MainData = {
 			player2: false,
 			playercpu: false,
 		},
+		tiles: [],
 		markTypeX: false,
 	},
 	tiles: generateInitialTileStatuses(),
@@ -68,11 +70,26 @@ export const useStore = create<Store>()(
 				...loadPersistedState(),
 			},
 			setTile: (index: number, tileStatus: TileStatus) => {
+				// sets tile info to the general 'tiles' state
 				set((state: Store) => {
 					return {
 						mainData: {
 							...state.mainData,
 							tiles: { ...state.mainData.tiles, [index]: tileStatus },
+						},
+					};
+				});
+				// sets tile info to the respective player
+				set((state: Store) => {
+					const player = state.mainData.tiles[index].isPlayer1Tile ? "player1" : "opponent";
+
+					return {
+						mainData: {
+							...state.mainData,
+							[player]: {
+								...state.mainData[player],
+								tiles: [...state.mainData[player].tiles, tileStatus],
+							},
 						},
 					};
 				});
@@ -143,6 +160,70 @@ export const useStore = create<Store>()(
 							...defaultMainData.player1,
 							markTypeX: state.mainData.player1.markTypeX,
 						},
+					},
+				}));
+			},
+			checkTilesForWinner: () => {
+				type Position = [number, number];
+				type WinningPosition = [Position, Position, Position];
+
+				const winningPositions: WinningPosition[] = [
+					// Horizontal lines
+					[
+						[0, 0],
+						[0, 1],
+						[0, 2], // First row
+					],
+					[
+						[1, 0],
+						[1, 1],
+						[1, 2], // Second row
+					],
+					[
+						[2, 0],
+						[2, 1],
+						[2, 2], // Third row
+					],
+					// Vertical lines
+					[
+						[0, 0],
+						[1, 0],
+						[2, 0], // First column
+					],
+					[
+						[0, 1],
+						[1, 1],
+						[2, 1], // Second column
+					],
+					[
+						[0, 2],
+						[1, 2],
+						[2, 2], // Third column
+					],
+					// Diagonal lines
+					[
+						[0, 0],
+						[1, 1],
+						[2, 2], // Main diagonal (top-left to bottom-right)
+					],
+					[
+						[0, 2],
+						[1, 1],
+						[2, 0], // Anti-diagonal (top-right to bottom-left)
+					],
+				];
+
+				const loopThroughTilesData = (tiles: TileStatus[]) => {
+					for (let i = 1; i <= 9; i++) {
+						tiles[i];
+					}
+
+					return 0;
+				};
+
+				set((state: Store) => ({
+					mainData: {
+						...state.mainData,
 					},
 				}));
 			},
