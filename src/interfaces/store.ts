@@ -13,7 +13,7 @@ export interface StoreActions {
 	setMarkType: (status: boolean) => void;
 	resetData: () => void;
 	restartGame: () => void;
-	checkTilesForWinner: () => void;
+	checkTilesForWinner: (player: "player1" | "opponent") => void;
 }
 
 export interface Store extends StoreActions {
