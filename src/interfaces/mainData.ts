@@ -1,4 +1,5 @@
-import { playerInfo } from "./playerInfo";
+import type { playerInfo } from "./playerInfo";
+import type { ScoreType } from "./scoreType";
 import type TileStatus from "./tileStatus";
 
 export type GameModal = {
@@ -11,11 +12,7 @@ export type GameModal = {
 export type MainData = {
 	menu: boolean;
 	gameModal: GameModal;
-	score: {
-		player1: number;
-		ties: number;
-		opponent: number;
-	};
+	score: ScoreType;
 	player1: playerInfo;
 	opponent: playerInfo;
 	tiles: Record<number, TileStatus>;
