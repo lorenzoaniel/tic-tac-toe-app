@@ -149,9 +149,16 @@ export const useStore = create<Store>()(
 				}));
 			},
 			restartGame: () => {
+				/* 
+					- menu is set to false so as to keep Board component present
+					- opponent and player marktypes as well as the type of player they are kept in tact
+					- score is set to persist
+
+				*/
 				set((state: Store) => ({
 					mainData: {
 						...defaultMainData,
+						score: state.mainData.score,
 						menu: false,
 						opponent: {
 							...defaultMainData.opponent,
@@ -217,11 +224,8 @@ export const useStore = create<Store>()(
 				];
 
 				/* 
-					We filter out the winning positions that don't involve the last move. This leaves us with only 1 to 4 
-					winning positions to check, instead of always checking all 8.
-					We check if the player who made the last move has all their 
-					pieces in one of the remaining winning positions. If they do, we return that player as the winner.
-					If we don't find a winner, we return null. 
+					checkWin will loop through all winningPositions and compare player tiles
+					will also check for ties and increment score.
 				*/
 
 				set((state: Store) => {
@@ -235,18 +239,12 @@ export const useStore = create<Store>()(
 							tiedActive: false,
 						};
 
+						// goes through all winning combos
 						for (const currWinningPos of winningPositions) {
-							let matchCounter = 0;
-							// let matchToggle = false;
+							let matchCounter = 0; // used to determine if there is a winner
+							// loops through player tiles
 							tiles.some((currTile) => {
-								// console.log(
-								// 	(currTile.pos.x === currWinningPos[0][0] &&
-								// 		currTile.pos.y === currWinningPos[0][1]) ||
-								// 		(currTile.pos.x === currWinningPos[1][0] &&
-								// 			currTile.pos.y === currWinningPos[1][1]) ||
-								// 		(currTile.pos.x === currWinningPos[2][0] &&
-								// 			currTile.pos.y === currWinningPos[2][1])
-								// );
+								// compares player tile pos with all three patterns per currWinningPos
 								if (
 									(currTile.pos.x === currWinningPos[0][0] &&
 										currTile.pos.y === currWinningPos[0][1]) ||
@@ -255,22 +253,25 @@ export const useStore = create<Store>()(
 									(currTile.pos.x === currWinningPos[2][0] &&
 										currTile.pos.y === currWinningPos[2][1])
 								) {
+									// increases match counter if condition above is passed
 									matchCounter++;
 
+									// checks for a winner
 									if (matchCounter >= 3) {
+										// increases score
 										scoreHolder = {
 											...score,
-											[player]: score[player]++,
+											[player]: ++score[player],
 										};
+										console.log(scoreHolder);
 										// set modal to player that won
 										gameModal = {
 											// if player is player1 or player2
 											winActive:
 												player === "player1" ||
-												(useStore.getState().mainData.opponent.players.player2 && true),
-											lostActive:
-												player === "opponent" ||
-												(useStore.getState().mainData.opponent.players.playercpu && true),
+												useStore.getState().mainData.opponent.players.player2,
+											// if player is cpu
+											lostActive: useStore.getState().mainData.opponent.players.playercpu,
 											restartActive: false,
 											tiedActive: false,
 										};
@@ -281,10 +282,15 @@ export const useStore = create<Store>()(
 						}
 
 						//for TIES
-						if (tiles.length === 5) {
+						/* 
+							checks if player selected has 5 tiles since there are 9 in total one player will
+							will have 5, this player will place the last tile in essence. Also checks if game modal has any true values,
+							if so then that means there was a winner and therefore cannot be a tie.
+						*/
+						if (tiles.length === 5 && !Object.values(gameModal).some((value) => value === true)) {
 							scoreHolder = {
 								...score,
-								ties: score.ties++,
+								ties: ++score.ties,
 							};
 							// set modal to player that won
 							gameModal = {
