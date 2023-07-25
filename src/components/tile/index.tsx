@@ -17,11 +17,14 @@ const Tile: React.FC<Props> = ({ tileID }) => {
 		tileState: useStore((state: Store) => state.mainData.tiles[tileIDState]),
 		isXTurnState: useStore((state: Store) => state.mainData.isXTurn),
 		isPlayer1MarkState: useStore((state: Store) => state.mainData.player1.markTypeX),
+		gameModal: useStore((state: Store) => state.mainData.gameModal),
+		test: useStore((state: Store) => state.mainData),
 	};
 
 	const dispatch = {
 		setTile: useStore((state: Store) => state.setTile),
 		setTurn: useStore((state: Store) => state.setTurn),
+		checkTilesForWinner: useStore((state: Store) => state.checkTilesForWinner),
 	};
 
 	const animated = {
@@ -65,8 +68,15 @@ const Tile: React.FC<Props> = ({ tileID }) => {
 						// relies on isXTurn
 						isMarkX: selector.isXTurnState,
 					});
+					// check tile for winner everytime a tile is selected
+					await dispatch.checkTilesForWinner(
+						selector.isXTurnState === selector.isPlayer1MarkState ? "player1" : "opponent"
+					);
+
+					if (!Object.values(selector.gameModal).some((value) => value === true)) {
+						dispatch.setTurn(!selector.isXTurnState);
+					}
 					// when finished setting tile new info change turn
-					await dispatch.setTurn(!selector.isXTurnState);
 				}
 			}}
 			variants={animated.tile}
