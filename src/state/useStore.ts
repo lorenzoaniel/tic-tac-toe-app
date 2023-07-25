@@ -1,3 +1,5 @@
+// import { ScoreType } from './../interfaces/scoreType';
+import { ScoreType } from "@/interfaces/scoreType";
 import { MainData } from "./../interfaces/mainData";
 import { GameModal } from "@/interfaces/mainData";
 import type { Store } from "@/interfaces/store";
@@ -143,7 +145,7 @@ export const useStore = create<Store>()(
 			},
 			resetData: () => {
 				set(() => ({
-					mainData: defaultMainData,
+					mainData: { ...defaultMainData },
 				}));
 			},
 			restartGame: () => {
@@ -163,9 +165,10 @@ export const useStore = create<Store>()(
 					},
 				}));
 			},
-			checkTilesForWinner: () => {
+			checkTilesForWinner: (player: "player1" | "opponent") => {
 				type Position = [number, number];
 				type WinningPosition = [Position, Position, Position];
+				let result;
 
 				const winningPositions: WinningPosition[] = [
 					// Horizontal lines
@@ -213,19 +216,99 @@ export const useStore = create<Store>()(
 					],
 				];
 
-				const loopThroughTilesData = (tiles: TileStatus[]) => {
-					for (let i = 1; i <= 9; i++) {
-						tiles[i];
-					}
+				/* 
+					We filter out the winning positions that don't involve the last move. This leaves us with only 1 to 4 
+					winning positions to check, instead of always checking all 8.
+					We check if the player who made the last move has all their 
+					pieces in one of the remaining winning positions. If they do, we return that player as the winner.
+					If we don't find a winner, we return null. 
+				*/
 
-					return 0;
-				};
+				set((state: Store) => {
+					const checkWin = (tiles: TileStatus[], score: ScoreType) => {
+						let scoreHolder: ScoreType = score;
+						let gameModal: GameModal = {
+							// if player is player1 or player2
+							winActive: false,
+							lostActive: false,
+							restartActive: false,
+							tiedActive: false,
+						};
 
-				set((state: Store) => ({
-					mainData: {
-						...state.mainData,
-					},
-				}));
+						for (const currWinningPos of winningPositions) {
+							let matchCounter = 0;
+							// let matchToggle = false;
+							tiles.some((currTile) => {
+								// console.log(
+								// 	(currTile.pos.x === currWinningPos[0][0] &&
+								// 		currTile.pos.y === currWinningPos[0][1]) ||
+								// 		(currTile.pos.x === currWinningPos[1][0] &&
+								// 			currTile.pos.y === currWinningPos[1][1]) ||
+								// 		(currTile.pos.x === currWinningPos[2][0] &&
+								// 			currTile.pos.y === currWinningPos[2][1])
+								// );
+								if (
+									(currTile.pos.x === currWinningPos[0][0] &&
+										currTile.pos.y === currWinningPos[0][1]) ||
+									(currTile.pos.x === currWinningPos[1][0] &&
+										currTile.pos.y === currWinningPos[1][1]) ||
+									(currTile.pos.x === currWinningPos[2][0] &&
+										currTile.pos.y === currWinningPos[2][1])
+								) {
+									matchCounter++;
+
+									if (matchCounter >= 3) {
+										scoreHolder = {
+											...score,
+											[player]: score[player]++,
+										};
+										// set modal to player that won
+										gameModal = {
+											// if player is player1 or player2
+											winActive:
+												player === "player1" ||
+												(useStore.getState().mainData.opponent.players.player2 && true),
+											lostActive:
+												player === "opponent" ||
+												(useStore.getState().mainData.opponent.players.playercpu && true),
+											restartActive: false,
+											tiedActive: false,
+										};
+										return null;
+									}
+								}
+							});
+						}
+
+						//for TIES
+						if (tiles.length === 5) {
+							scoreHolder = {
+								...score,
+								ties: score.ties++,
+							};
+							// set modal to player that won
+							gameModal = {
+								// if player is player1 or player2
+								winActive: false,
+								lostActive: false,
+								restartActive: false,
+								tiedActive: true,
+							};
+						}
+
+						return { score: scoreHolder, modal: gameModal };
+					};
+
+					result = checkWin(state.mainData[player].tiles, state.mainData.score);
+
+					return {
+						mainData: {
+							...state.mainData,
+							gameModal: result.modal,
+							score: result.score,
+						},
+					};
+				});
 			},
 		}),
 		{
