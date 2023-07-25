@@ -31,8 +31,6 @@ const Board: React.FC = () => {
 		isXTurnState: useStore((state: Store) => state.mainData.isXTurn),
 	};
 
-	console.log(selector.players.player1, selector.players.opponent);
-
 	//DISPATCH
 	let dispatch = {
 		handleRestart: useStore((state: Store) => state.setModalType),

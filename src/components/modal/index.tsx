@@ -112,19 +112,11 @@ const Modal: React.FC<Props> = ({ modalActiveStatus }) => {
             `
 					)}
 				>
-					<ModalDefault
-						title={"QUIT"}
-						isPrimary={true}
-						handleClick={function (): void {
-							throw new Error("Function not implemented.");
-						}}
-					/>
+					<ModalDefault title={"QUIT"} isPrimary={true} handleClick={() => dispatch.resetData()} />
 					<ModalDefault
 						title={"NEXT ROUND"}
 						isPrimary={false}
-						handleClick={function (): void {
-							throw new Error("Function not implemented.");
-						}}
+						handleClick={() => dispatch.restartGame()}
 					/>
 				</div>
 			),
