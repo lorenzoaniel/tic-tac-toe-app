@@ -55,7 +55,14 @@ const Modal: React.FC = () => {
 							"AlertDialogDescription",
 							`
                 flex justify-between items-center gap-x-[0.9rem]
-              `
+              `,
+							`
+                  text-heading-m
+                  ${selector.modalActiveStatus.winActive && "text-primary-text-200"}
+                  ${selector.modalActiveStatus.lostActive && "text-secondary-text-100"}
+
+                  md:text-heading-l
+                `
 						)}
 					>
 						{selector.modalActiveStatus.lostActive && (
@@ -87,20 +94,7 @@ const Modal: React.FC = () => {
 								/>
 							</svg>
 						)}
-						<h3
-							className={clsx(
-								"AlertDialogDescription-subtitle",
-								`
-                  text-heading-m
-                  ${selector.modalActiveStatus.winActive && "text-primary-text-200"}
-                  ${selector.modalActiveStatus.lostActive && "text-secondary-text-100"}
-
-                  md:text-heading-l
-                `
-							)}
-						>
-							TAKES THE ROUND
-						</h3>
+						TAKES THE ROUND
 					</AlertDialog.Description>
 				</>
 			),
