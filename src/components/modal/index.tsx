@@ -1,20 +1,26 @@
 import React from "react";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
-import { ModalActiveStatus } from "@/interfaces/modalActiveStatus";
 import clsx from "clsx";
 import ModalDefault from "../button/modaldefault";
 import { useStore } from "@/state/useStore";
 import { Store } from "@/interfaces/store";
 
-interface Props {
-	modalActiveStatus: ModalActiveStatus;
-}
+const Modal: React.FC = () => {
+	//SELECTOR
+	let selector = {
+		modalActiveStatus: useStore((state: Store) => state.mainData.gameModal),
+		players: {
+			player1: useStore((state: Store) => state.mainData.player1),
+			opponent: useStore((state: Store) => state.mainData.opponent),
+		},
+		score: useStore((state: Store) => state.mainData.score),
+	};
 
-const Modal: React.FC<Props> = ({ modalActiveStatus }) => {
 	//DISPATCH
 	let dispatch = {
 		resetData: useStore((state: Store) => state.resetData),
 		restartGame: useStore((state: Store) => state.restartGame),
+		setModalType: useStore((state: Store) => state.setModalType),
 	};
 
 	const config = {
@@ -30,8 +36,19 @@ const Modal: React.FC<Props> = ({ modalActiveStatus }) => {
               `
 						)}
 					>
-						{modalActiveStatus.lostActive && "OH NO, YOU LOST..."}
-						{modalActiveStatus.winActive && "YOU WON!"}
+						{/* 
+							- lost against opponent
+							- won against opponent
+							- 
+						*/}
+						{selector.modalActiveStatus.lostActive && "OH NO, YOU LOST..."}
+						{selector.modalActiveStatus.winActive &&
+							selector.players.opponent.players.playercpu &&
+							"YOU WON!"}
+						{selector.modalActiveStatus.winActive &&
+							(selector.players.opponent.players.player1 ||
+								selector.players.opponent.players.player2) &&
+							`${selector.players.player1.didWin ? "PLAYER 1 " : "PLAYER 2 "} WINS`}
 					</AlertDialog.Title>
 					<AlertDialog.Description
 						className={clsx(
@@ -41,7 +58,7 @@ const Modal: React.FC<Props> = ({ modalActiveStatus }) => {
               `
 						)}
 					>
-						{modalActiveStatus.lostActive && (
+						{selector.modalActiveStatus.lostActive && (
 							<svg
 								className={clsx(`md:w-[6.4rem] md:h-[6.4rem]`)}
 								width="30"
@@ -55,7 +72,7 @@ const Modal: React.FC<Props> = ({ modalActiveStatus }) => {
 								/>
 							</svg>
 						)}
-						{modalActiveStatus.winActive && (
+						{selector.modalActiveStatus.winActive && (
 							<svg
 								className={clsx(`md:w-[6.4rem] md:h-[6.4rem]`)}
 								width="30"
@@ -75,8 +92,8 @@ const Modal: React.FC<Props> = ({ modalActiveStatus }) => {
 								"AlertDialogDescription-subtitle",
 								`
                   text-heading-m
-                  ${modalActiveStatus.winActive && "text-primary-text-200"}
-                  ${modalActiveStatus.lostActive && "text-secondary-text-100"}
+                  ${selector.modalActiveStatus.winActive && "text-primary-text-200"}
+                  ${selector.modalActiveStatus.lostActive && "text-secondary-text-100"}
 
                   md:text-heading-l
                 `
@@ -97,8 +114,8 @@ const Modal: React.FC<Props> = ({ modalActiveStatus }) => {
             `
 					)}
 				>
-					{modalActiveStatus.restartActive && "RESTART GAME?"}
-					{modalActiveStatus.tiedActive && "ROUND TIED"}
+					{selector.modalActiveStatus.restartActive && "RESTART GAME?"}
+					{selector.modalActiveStatus.tiedActive && "ROUND TIED"}
 				</AlertDialog.Title>
 			),
 		},
@@ -132,7 +149,8 @@ const Modal: React.FC<Props> = ({ modalActiveStatus }) => {
 					<ModalDefault
 						title={"NO, CANCEL"}
 						isPrimary={true}
-						handleClick={() => dispatch.resetData()}
+						// this enables a modal reset to remove modal from screen
+						handleClick={() => dispatch.setModalType(undefined, undefined, true)}
 					/>
 					<ModalDefault
 						title={"YES, RESTART"}
@@ -147,10 +165,10 @@ const Modal: React.FC<Props> = ({ modalActiveStatus }) => {
 	return (
 		<AlertDialog.Root
 			defaultOpen={
-				modalActiveStatus.lostActive ||
-				modalActiveStatus.winActive ||
-				modalActiveStatus.restartActive ||
-				modalActiveStatus.tiedActive
+				selector.modalActiveStatus.lostActive ||
+				selector.modalActiveStatus.winActive ||
+				selector.modalActiveStatus.restartActive ||
+				selector.modalActiveStatus.tiedActive
 			}
 		>
 			<AlertDialog.Portal>
@@ -172,9 +190,13 @@ const Modal: React.FC<Props> = ({ modalActiveStatus }) => {
               bg-primary-bg-200
               p-[4.8rem]
               flex flex-col items-center 
-              ${(modalActiveStatus.lostActive || modalActiveStatus.winActive) && "justify-between"}
               ${
-								(modalActiveStatus.restartActive || modalActiveStatus.tiedActive) &&
+								(selector.modalActiveStatus.lostActive || selector.modalActiveStatus.winActive) &&
+								"justify-between"
+							}
+              ${
+								(selector.modalActiveStatus.restartActive ||
+									selector.modalActiveStatus.tiedActive) &&
 								"gap-y-[2.4rem]"
 							}
 
@@ -184,23 +206,24 @@ const Modal: React.FC<Props> = ({ modalActiveStatus }) => {
 				>
 					{
 						// Renders title section for win or loss variant
-						(modalActiveStatus.lostActive || modalActiveStatus.winActive) && config.title.winOrLose
+						(selector.modalActiveStatus.lostActive || selector.modalActiveStatus.winActive) &&
+							config.title.winOrLose
 					}
 					{
 						// Renders title section for restart or tied variant
-						(modalActiveStatus.restartActive || modalActiveStatus.tiedActive) &&
+						(selector.modalActiveStatus.restartActive || selector.modalActiveStatus.tiedActive) &&
 							config.title.restartOrTie
 					}
 					{
 						// Renders button section for win/loss/tied variant
-						(modalActiveStatus.lostActive ||
-							modalActiveStatus.winActive ||
-							modalActiveStatus.tiedActive) &&
+						(selector.modalActiveStatus.lostActive ||
+							selector.modalActiveStatus.winActive ||
+							selector.modalActiveStatus.tiedActive) &&
 							config.buttons.winLoseTie
 					}
 					{
 						// Renders button section for restart variant
-						modalActiveStatus.restartActive && config.buttons.restartOnly
+						selector.modalActiveStatus.restartActive && config.buttons.restartOnly
 					}
 				</AlertDialog.Content>
 			</AlertDialog.Portal>

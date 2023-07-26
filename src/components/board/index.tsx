@@ -83,9 +83,7 @@ const Board: React.FC = () => {
 					score={selector.scoreState.opponent}
 					markTypeIsX={selector.playerTypeMarkState.opponent}
 				/>
-				{Object.values(selector.gameModalState).some((value) => value === true) && (
-					<Modal modalActiveStatus={selector.gameModalState} />
-				)}
+				{Object.values(selector.gameModalState).some((value) => value === true) && <Modal />}
 			</section>
 		</>
 	);
