@@ -5,4 +5,5 @@ export interface playerInfo {
 	players: PlayerIdentity;
 	markTypeX: boolean;
 	tiles: TileStatus[];
+	didWin: boolean;
 }

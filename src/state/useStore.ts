@@ -45,6 +45,7 @@ const defaultMainData: MainData = {
 		},
 		tiles: [],
 		markTypeX: true,
+		didWin: false,
 	},
 	opponent: {
 		players: {
@@ -54,6 +55,7 @@ const defaultMainData: MainData = {
 		},
 		tiles: [],
 		markTypeX: false,
+		didWin: false,
 	},
 	tiles: generateInitialTileStatuses(),
 	isXTurn: true,
@@ -104,16 +106,30 @@ export const useStore = create<Store>()(
 					},
 				}));
 			},
-			setModalType: (modalType: keyof GameModal, status: boolean) => {
-				set((state: Store) => ({
-					mainData: {
-						...state.mainData,
-						gameModal: {
-							...state.mainData.gameModal,
-							[modalType]: status,
+			setModalType: (modalType?: keyof GameModal, status?: boolean, reset?: boolean) => {
+				// if changing an individual property
+				if (modalType !== undefined && status !== undefined) {
+					set((state: Store) => ({
+						mainData: {
+							...state.mainData,
+							gameModal: {
+								...state.mainData.gameModal,
+								[modalType]: status,
+							},
 						},
-					},
-				}));
+					}));
+				}
+
+				if (reset) {
+					set((state: Store) => ({
+						mainData: {
+							...state.mainData,
+							gameModal: {
+								...defaultMainData.gameModal,
+							},
+						},
+					}));
+				}
 			},
 			setTurn: (status: boolean) => {
 				set((state: Store) => ({
@@ -238,6 +254,7 @@ export const useStore = create<Store>()(
 							restartActive: false,
 							tiedActive: false,
 						};
+						let didWin = false;
 
 						// goes through all winning combos
 						for (const currWinningPos of winningPositions) {
@@ -263,7 +280,6 @@ export const useStore = create<Store>()(
 											...score,
 											[player]: ++score[player],
 										};
-										console.log(scoreHolder);
 										// set modal to player that won
 										gameModal = {
 											// if player is player1 or player2
@@ -275,6 +291,8 @@ export const useStore = create<Store>()(
 											restartActive: false,
 											tiedActive: false,
 										};
+										// sets didWin for winning player for use in other components
+										didWin = true;
 										return null;
 									}
 								}
@@ -302,7 +320,7 @@ export const useStore = create<Store>()(
 							};
 						}
 
-						return { score: scoreHolder, modal: gameModal };
+						return { score: scoreHolder, modal: gameModal, didWin: didWin };
 					};
 
 					result = checkWin(state.mainData[player].tiles, state.mainData.score);
@@ -312,6 +330,10 @@ export const useStore = create<Store>()(
 							...state.mainData,
 							gameModal: result.modal,
 							score: result.score,
+							[player]: {
+								...state.mainData[player],
+								didWin: result.didWin,
+							},
 						},
 					};
 				});
