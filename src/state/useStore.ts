@@ -1,71 +1,15 @@
-// import { ScoreType } from './../interfaces/scoreType';
-import { ScoreType } from "@/interfaces/scoreType";
-import { MainData } from "./../interfaces/mainData";
-import { GameModal } from "@/interfaces/mainData";
+import type { MainData } from "./../interfaces/mainData";
+import type { GameModal } from "@/interfaces/mainData";
 import type { Store } from "@/interfaces/store";
-import TileStatus from "@/interfaces/tileStatus";
+import type TileStatus from "@/interfaces/tileStatus";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-
-const generateInitialTileStatuses = (): Record<number, TileStatus> => {
-	let tiles: Record<number, TileStatus> = {};
-
-	for (let i = 1; i <= 9; i++) {
-		tiles[i] = {
-			isMarkSelected: false,
-			isPlayer1Tile: false,
-			isMarkX: false,
-			tileID: i,
-			pos: { x: Math.floor((i - 1) % 3), y: Math.floor((i - 1) / 3) },
-		};
-	}
-
-	return tiles;
-};
-
-// used as default values for loadPersistedState
-const defaultMainData: MainData = {
-	menu: true,
-	gameModal: {
-		winActive: false,
-		lostActive: false,
-		restartActive: false,
-		tiedActive: false,
-	},
-	score: {
-		player1: 0,
-		ties: 0,
-		opponent: 0,
-	},
-	player1: {
-		players: {
-			player1: true,
-			player2: false,
-			playercpu: false,
-		},
-		tiles: [],
-		markTypeX: true,
-		didWin: false,
-	},
-	opponent: {
-		players: {
-			player1: false,
-			player2: false,
-			playercpu: false,
-		},
-		tiles: [],
-		markTypeX: false,
-		didWin: false,
-	},
-	tiles: generateInitialTileStatuses(),
-	isXTurn: true,
-};
-
-//need this to insure that server and client information is synced if there is any data in localStorage
-const loadPersistedState = () => {
-	const persistedStateString = localStorage.getItem("tictactoe-data");
-	return persistedStateString ? JSON.parse(persistedStateString) : defaultMainData;
-};
+import { defaultMainData, loadPersistedState } from "@/helpers/loadPersistedState";
+import { checkWin } from "@/helpers/checkWin";
+import { greedyMove } from "@/helpers/botMoves";
+import { ScoreType } from "@/interfaces/scoreType";
+import { generateInitialTileStatuses } from "@/helpers/generateInitialTileStatuses";
+import { checkTies } from "@/helpers/checkTies";
 
 export const useStore = create<Store>()(
 	persist(
@@ -119,7 +63,7 @@ export const useStore = create<Store>()(
 						},
 					}));
 				}
-
+				// if there is a reset option then modal resets to default of all false
 				if (reset) {
 					set((state: Store) => ({
 						mainData: {
@@ -161,7 +105,15 @@ export const useStore = create<Store>()(
 			},
 			resetData: () => {
 				set(() => ({
-					mainData: { ...defaultMainData },
+					mainData: {
+						...defaultMainData,
+						score: {
+							player1: 0,
+							ties: 0,
+							opponent: 0,
+						},
+						tiles: generateInitialTileStatuses(),
+					},
 				}));
 			},
 			restartGame: () => {
@@ -185,59 +137,12 @@ export const useStore = create<Store>()(
 							...defaultMainData.player1,
 							markTypeX: state.mainData.player1.markTypeX,
 						},
+						tiles: generateInitialTileStatuses(),
 					},
 				}));
 			},
 			checkTilesForWinner: (player: "player1" | "opponent") => {
-				type Position = [number, number];
-				type WinningPosition = [Position, Position, Position];
-				let result;
-
-				const winningPositions: WinningPosition[] = [
-					// Horizontal lines
-					[
-						[0, 0],
-						[0, 1],
-						[0, 2], // First row
-					],
-					[
-						[1, 0],
-						[1, 1],
-						[1, 2], // Second row
-					],
-					[
-						[2, 0],
-						[2, 1],
-						[2, 2], // Third row
-					],
-					// Vertical lines
-					[
-						[0, 0],
-						[1, 0],
-						[2, 0], // First column
-					],
-					[
-						[0, 1],
-						[1, 1],
-						[2, 1], // Second column
-					],
-					[
-						[0, 2],
-						[1, 2],
-						[2, 2], // Third column
-					],
-					// Diagonal lines
-					[
-						[0, 0],
-						[1, 1],
-						[2, 2], // Main diagonal (top-left to bottom-right)
-					],
-					[
-						[0, 2],
-						[1, 1],
-						[2, 0], // Anti-diagonal (top-right to bottom-left)
-					],
-				];
+				let result: { score: ScoreType; modal: GameModal; didWin: boolean };
 
 				/* 
 					checkWin will loop through all winningPositions and compare player tiles
@@ -245,85 +150,44 @@ export const useStore = create<Store>()(
 				*/
 
 				set((state: Store) => {
-					const checkWin = (tiles: TileStatus[], score: ScoreType) => {
-						let scoreHolder: ScoreType = score;
-						let gameModal: GameModal = {
-							// if player is player1 or player2
-							winActive: false,
-							lostActive: false,
-							restartActive: false,
-							tiedActive: false,
-						};
-						let didWin = false;
-
-						// goes through all winning combos
-						for (const currWinningPos of winningPositions) {
-							let matchCounter = 0; // used to determine if there is a winner
-							// loops through player tiles
-							tiles.some((currTile) => {
-								// compares player tile pos with all three patterns per currWinningPos
-								if (
-									(currTile.pos.x === currWinningPos[0][0] &&
-										currTile.pos.y === currWinningPos[0][1]) ||
-									(currTile.pos.x === currWinningPos[1][0] &&
-										currTile.pos.y === currWinningPos[1][1]) ||
-									(currTile.pos.x === currWinningPos[2][0] &&
-										currTile.pos.y === currWinningPos[2][1])
-								) {
-									// increases match counter if condition above is passed
-									matchCounter++;
-
-									// checks for a winner
-									if (matchCounter >= 3) {
-										// increases score
-										scoreHolder = {
-											...score,
-											[player]: ++score[player],
-										};
-										// set modal to player that won
-										gameModal = {
-											// if player is player1 or player2
-											winActive:
-												player === "player1" ||
-												useStore.getState().mainData.opponent.players.player2,
-											// if player is cpu
-											lostActive: useStore.getState().mainData.opponent.players.playercpu,
-											restartActive: false,
-											tiedActive: false,
-										};
-										// sets didWin for winning player for use in other components
-										didWin = true;
-										return null;
-									}
-								}
-							});
-						}
-
-						//for TIES
-						/* 
-							checks if player selected has 5 tiles since there are 9 in total one player will
-							will have 5, this player will place the last tile in essence. Also checks if game modal has any true values,
-							if so then that means there was a winner and therefore cannot be a tie.
-						*/
-						if (tiles.length === 5 && !Object.values(gameModal).some((value) => value === true)) {
-							scoreHolder = {
-								...score,
-								ties: ++score.ties,
-							};
-							// set modal to player that won
-							gameModal = {
-								// if player is player1 or player2
-								winActive: false,
-								lostActive: false,
-								restartActive: false,
-								tiedActive: true,
-							};
-						}
-
-						return { score: scoreHolder, modal: gameModal, didWin: didWin };
+					result = {
+						score: {
+							...state.mainData.score,
+						},
+						modal: {
+							...state.mainData.gameModal,
+						},
+						didWin: false,
 					};
 
-					result = checkWin(state.mainData[player].tiles, state.mainData.score);
+					if (checkWin(player, state.mainData[player].tiles)) {
+						result = {
+							score: {
+								...state.mainData.score,
+								[player]: ++state.mainData.score[player],
+							},
+							modal: {
+								...state.mainData.gameModal,
+								winActive: true,
+							},
+							didWin: true,
+						};
+					}
+
+					// Check for ties
+					if (checkTies(state.mainData[player].tiles, result.didWin)) {
+						result = {
+							score: {
+								...state.mainData.score,
+								ties: ++state.mainData.score.ties,
+							},
+							modal: {
+								...state.mainData.gameModal,
+								tiedActive: true,
+							},
+							didWin: false,
+						};
+					}
 
 					return {
 						mainData: {
