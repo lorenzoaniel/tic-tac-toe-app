@@ -16,9 +16,15 @@ const Tile: React.FC<Props> = ({ tileID }) => {
 	const selector = {
 		tileState: useStore((state: Store) => state.mainData.tiles[tileIDState]),
 		isXTurnState: useStore((state: Store) => state.mainData.isXTurn),
-		isPlayer1MarkState: useStore((state: Store) => state.mainData.player1.markTypeX),
+		playerTypeMarkState: {
+			player1: useStore((state: Store) => state.mainData.player1.markTypeX),
+			opponent: useStore((state: Store) => state.mainData.opponent.markTypeX),
+		},
 		gameModal: useStore((state: Store) => state.mainData.gameModal),
-		test: useStore((state: Store) => state.mainData),
+		players: {
+			player1: useStore((state: Store) => state.mainData.player1),
+			opponent: useStore((state: Store) => state.mainData.opponent),
+		},
 	};
 
 	const dispatch = {
@@ -51,26 +57,38 @@ const Tile: React.FC<Props> = ({ tileID }) => {
 		},
 	};
 
+	// // if playing with cpu
+	// if (
+	// 	selector.players.opponent.players.playercpu &&
+	// 	!selector.isXTurnState === selector.playerTypeMarkState.player1
+	// ) {
+	// 	dispatch.cpuMove();
+	// 	if (!Object.values(selector.gameModal).some((value) => value === true)) {
+	// 		dispatch.setTurn(!selector.isXTurnState);
+	// 	}
+	// }
+
 	return (
 		<motion.div
 			{...motionProps.tile}
-			onClick={async () => {
+			onClick={() => {
 				// logic that prevents setting tile info if tile already occupied
 				if (!selector.tileState.isMarkSelected) {
 					// if tile not occupied set new tile info, the styling will be reflected via
 					// looking at the specific tile state after change
-					await dispatch.setTile(tileIDState, {
+					dispatch.setTile(tileIDState, {
 						...selector.tileState,
 						// converted to true since it is selected when clicked
 						isMarkSelected: true,
 						// compares current turn Mark with player1 mark type and returns result boolean
-						isPlayer1Tile: selector.isXTurnState === selector.isPlayer1MarkState ? true : false,
+						isPlayer1Tile:
+							selector.isXTurnState === selector.playerTypeMarkState.player1 ? true : false,
 						// relies on isXTurn
 						isMarkX: selector.isXTurnState,
 					});
 					// check tile for winner everytime a tile is selected
-					await dispatch.checkTilesForWinner(
-						selector.isXTurnState === selector.isPlayer1MarkState ? "player1" : "opponent"
+					dispatch.checkTilesForWinner(
+						selector.isXTurnState === selector.playerTypeMarkState.player1 ? "player1" : "opponent"
 					);
 
 					if (!Object.values(selector.gameModal).some((value) => value === true)) {
