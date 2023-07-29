@@ -41,10 +41,8 @@ const Modal: React.FC = () => {
 							- won against opponent
 							- 
 						*/}
-						{selector.modalActiveStatus.lostActive && "OH NO, YOU LOST..."}
-						{selector.modalActiveStatus.winActive &&
-							selector.players.opponent.players.playercpu &&
-							"YOU WON!"}
+						{selector.players.opponent.players.playercpu &&
+							`${selector.players.player1.didWin ? "YOU WON!" : "OH NO, YOU LOST..."}`}
 						{selector.modalActiveStatus.winActive &&
 							(selector.players.opponent.players.player1 ||
 								selector.players.opponent.players.player2) &&
@@ -144,7 +142,8 @@ const Modal: React.FC = () => {
 						title={"NO, CANCEL"}
 						isPrimary={true}
 						// this enables a modal reset to remove modal from screen
-						handleClick={() => dispatch.setModalType(undefined, undefined, true)}
+						// handleClick={() => dispatch.setModalType(undefined, undefined, true)}
+						handleClick={() => dispatch.resetData()}
 					/>
 					<ModalDefault
 						title={"YES, RESTART"}
