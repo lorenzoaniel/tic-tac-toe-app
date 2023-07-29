@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import React from "react";
+import React, { useEffect } from "react";
 import Logo from "../logo";
 import TurnDisplay from "../display/turn";
 import Restart from "../button/restart";
@@ -10,6 +10,7 @@ import StatDisplay from "../display/stat";
 import { useStore } from "@/state/useStore";
 import type { Store } from "@/interfaces/store";
 import Modal from "../modal";
+import { greedyMove } from "@/helpers/botMoves";
 
 const Board: React.FC = () => {
 	//SELECTORS
@@ -29,11 +30,16 @@ const Board: React.FC = () => {
 			opponent: useStore((state: Store) => state.mainData.opponent),
 		},
 		isXTurnState: useStore((state: Store) => state.mainData.isXTurn),
+		gameModal: useStore((state: Store) => state.mainData.gameModal),
+		tiles: useStore((state: Store) => state.mainData.tiles),
 	};
 
 	//DISPATCH
 	let dispatch = {
 		handleRestart: useStore((state: Store) => state.setModalType),
+		setTurn: useStore((state: Store) => state.setTurn),
+		setTile: useStore((state: Store) => state.setTile),
+		checkTilesForWinner: useStore((state: Store) => state.checkTilesForWinner),
 	};
 
 	// prevents memory leak from calling this unlimited times
@@ -51,6 +57,41 @@ const Board: React.FC = () => {
 				);
 			});
 	}, []);
+
+	useEffect(() => {
+		// if playing with cpu & turn same as cpu mark & no modals active
+		if (
+			selector.players.opponent.players.playercpu &&
+			selector.isXTurnState === selector.playerTypeMarkState.opponent &&
+			!Object.values(selector.gameModal).some((value) => value === true)
+		) {
+			// cpu decides a move
+			const tileId = greedyMove(
+				selector.players.player1.tiles,
+				selector.players.opponent.tiles,
+				selector.tiles
+			);
+
+			// set tile
+			dispatch.setTile(tileId, {
+				...selector.tiles[tileId],
+				// converted to true since it is selected when clicked
+				isMarkSelected: true,
+				// greedyMove already figures out of tile is safe to select
+				isPlayer1Tile: false,
+				// relies on isXTurn
+				isMarkX: selector.playerTypeMarkState.opponent,
+			});
+
+			// check for winner
+			dispatch.checkTilesForWinner("opponent");
+
+			// if no winners or ties switch turn
+			if (!Object.values(selector.gameModal).some((value) => value === true)) {
+				dispatch.setTurn(!selector.isXTurnState);
+			}
+		}
+	}, [selector.isXTurnState]);
 
 	return (
 		<>
