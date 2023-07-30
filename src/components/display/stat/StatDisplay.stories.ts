@@ -1,3 +1,4 @@
+// import { PlayerIdentity } from '@/interfaces/playeridentity';
 import { StoryObj, Meta } from "@storybook/react";
 import StatDisplay from ".";
 
@@ -6,9 +7,19 @@ const meta: Meta<typeof StatDisplay> = {
 	component: StatDisplay,
 	tags: ["docs"],
 	argTypes: {
-		playerIdentity: {
+		playersInPlay: {
 			control: { type: "object" },
 			defaultValue: { player1: false, player2: false, playercpu: false }, // set default values
+		},
+		markTypeIsX: {
+			control: {
+				type: "boolean",
+			},
+		},
+		isTie: {
+			control: {
+				type: "boolean",
+			},
 		},
 		score: {
 			control: { type: "number" },
@@ -21,28 +32,31 @@ type Story = StoryObj<typeof StatDisplay>;
 
 export const Player1: Story = {
 	args: {
-		playerIdentity: { player1: true, player2: false, playercpu: false },
+		playersInPlay: { player1: true, player2: false, playercpu: false },
+		markTypeIsX: true,
 		score: 14,
 	},
 };
 
 export const Player2: Story = {
 	args: {
-		playerIdentity: { player1: false, player2: true, playercpu: false },
+		playersInPlay: { player1: false, player2: true, playercpu: false },
+		markTypeIsX: false,
 		score: 11,
 	},
 };
 
 export const PlayerCpu: Story = {
 	args: {
-		playerIdentity: { player1: false, player2: false, playercpu: true },
+		playersInPlay: { player1: false, player2: false, playercpu: true },
+		markTypeIsX: false,
 		score: 11,
 	},
 };
 
 export const Tie: Story = {
 	args: {
-		playerIdentity: { player1: false, player2: false, playercpu: false },
+		playersInPlay: { player1: false, player2: false, playercpu: false },
 		isTie: true,
 		score: 32,
 	},

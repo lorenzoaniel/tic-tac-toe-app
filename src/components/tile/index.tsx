@@ -57,17 +57,6 @@ const Tile: React.FC<Props> = ({ tileID }) => {
 		},
 	};
 
-	// // if playing with cpu
-	// if (
-	// 	selector.players.opponent.players.playercpu &&
-	// 	!selector.isXTurnState === selector.playerTypeMarkState.player1
-	// ) {
-	// 	dispatch.cpuMove();
-	// 	if (!Object.values(selector.gameModal).some((value) => value === true)) {
-	// 		dispatch.setTurn(!selector.isXTurnState);
-	// 	}
-	// }
-
 	return (
 		<motion.div
 			{...motionProps.tile}
