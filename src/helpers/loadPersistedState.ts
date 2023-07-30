@@ -3,8 +3,14 @@ import { generateInitialTileStatuses } from "./generateInitialTileStatuses";
 
 //need this to insure that server and client information is synced if there is any data in localStorage
 export const loadPersistedState = () => {
-	const persistedStateString = localStorage.getItem("tictactoe-data");
-	return persistedStateString ? JSON.parse(persistedStateString) : defaultMainData;
+	// Only interact with localStorage on the client side
+	if (typeof window !== "undefined") {
+		const persistedStateString = localStorage.getItem("tictactoe-data");
+		return persistedStateString ? JSON.parse(persistedStateString) : defaultMainData;
+	} else {
+		// Return default data when on server side
+		return defaultMainData;
+	}
 };
 
 // used as default values for loadPersistedState
